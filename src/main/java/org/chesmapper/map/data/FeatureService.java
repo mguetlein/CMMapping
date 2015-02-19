@@ -17,8 +17,8 @@ import java.util.Vector;
 import javax.vecmath.Point3d;
 
 import org.chesmapper.map.dataInterface.CompoundProperty;
-import org.chesmapper.map.dataInterface.NominalProperty;
 import org.chesmapper.map.dataInterface.CompoundPropertySet.Type;
+import org.chesmapper.map.dataInterface.NominalProperty;
 import org.chesmapper.map.main.Settings;
 import org.chesmapper.map.main.TaskProvider;
 import org.chesmapper.map.property.IntegratedPropertySet;
@@ -26,8 +26,8 @@ import org.chesmapper.map.util.ValueFileCache;
 import org.mg.javalib.io.SDFUtil;
 import org.mg.javalib.util.ArrayUtil;
 import org.mg.javalib.util.FileUtil;
-import org.mg.javalib.util.ListUtil;
 import org.mg.javalib.util.FileUtil.UnexpectedNumColsException;
+import org.mg.javalib.util.ListUtil;
 import org.openscience.cdk.Atom;
 import org.openscience.cdk.AtomContainer;
 import org.openscience.cdk.CDKConstants;
@@ -464,6 +464,9 @@ public class FeatureService
 				{
 					if (key == null)
 						throw new Error("null key in dataset, empty column header?");
+					if (key.toString().equals("cdk:Remark")
+							&& (mol.getProperty(key) == null || mol.getProperty(key).toString().isEmpty()))
+						continue;
 					IntegratedPropertySet p = IntegratedPropertySet.create(key.toString(), dataset);
 					integratedProperties.get(dataset).add(p);
 					if (key.toString().toUpperCase().equals("STRUCTURE_SMILES")
