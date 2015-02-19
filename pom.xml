@@ -9,8 +9,8 @@
     <properties>
   <maven.compiler.source>1.7</maven.compiler.source>
   <maven.compiler.target>1.7</maven.compiler.target>
-  <cdk.version>1.5.8</cdk.version>
-  <cdk.version.builder>1.5.9</cdk.version.builder>
+  <cdk.version>1.5.10</cdk.version>
+  <cdk.version.builder>1.5.10</cdk.version.builder>
   </properties>
   <dependencies>
 	  <dependency>
