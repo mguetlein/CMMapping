@@ -9,9 +9,11 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.Vector;
 
 import javax.vecmath.Point3d;
@@ -454,6 +456,17 @@ public class FeatureService
 				reader.close();
 			}
 
+			// store cdk props to add only if they contain information
+			HashMap<Object, Set<Object>> cdkProps = new HashMap<Object, Set<Object>>();
+			for (IAtomContainer mol : list)
+				for (Object key : mol.getProperties().keySet())
+					if (key != null && key.toString().startsWith("cdk:"))
+					{
+						if (!cdkProps.containsKey(key))
+							cdkProps.put(key, new HashSet<Object>());
+						cdkProps.get(key).add(mol.getProperty(key));
+					}
+
 			List<Integer> illegalCompounds = new ArrayList<Integer>();
 			HashMap<IntegratedPropertySet, List<Object>> propVals = new HashMap<IntegratedPropertySet, List<Object>>();
 
@@ -464,8 +477,7 @@ public class FeatureService
 				{
 					if (key == null)
 						throw new Error("null key in dataset, empty column header?");
-					if (key.toString().equals("cdk:Remark")
-							&& (mol.getProperty(key) == null || mol.getProperty(key).toString().isEmpty()))
+					if (cdkProps.containsKey(key) && cdkProps.get(key).size() < 2)
 						continue;
 					IntegratedPropertySet p = IntegratedPropertySet.create(key.toString(), dataset);
 					integratedProperties.get(dataset).add(p);
