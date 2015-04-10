@@ -60,6 +60,12 @@ public class CompoundArffWriter implements ArffWritable
 	}
 
 	@Override
+	public String getRelationName()
+	{
+		return "CheS-Mapper-Dataset";
+	}
+
+	@Override
 	public List<String> getAdditionalInfo()
 	{
 		return null;

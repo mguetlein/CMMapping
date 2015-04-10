@@ -218,7 +218,9 @@ public class ClusterDataImpl implements ClusterData
 			return null;
 		if (p instanceof NominalProperty)
 			return getSummaryValue(p, true).toString(html);
-		if (p instanceof NumericProperty && ((NumericProperty) p).hasSmallDoubleValues())
+		if (getSummaryValue(p).isAllNull())
+			return p.getFormattedNullValue();
+		if (((NumericProperty) p).hasSmallDoubleValues())
 			return ((DoubleArraySummary) getSummaryValue(p)).toString(html, 3);
 		return getSummaryValue(p).toString(html);
 	}

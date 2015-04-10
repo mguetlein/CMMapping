@@ -22,8 +22,10 @@ import org.mg.javalib.gui.binloc.Binary;
 import org.mg.javalib.util.ArrayUtil;
 import org.mg.javalib.util.DoubleKeyHashMap;
 import org.mg.javalib.util.FileUtil.UnexpectedNumColsException;
+import org.openscience.cdk.config.Isotopes;
 import org.openscience.cdk.interfaces.IAtomContainer;
 import org.openscience.cdk.qsar.IMolecularDescriptor;
+import org.openscience.cdk.qsar.descriptors.molecular.LengthOverBreadthDescriptor;
 
 public class CDKPropertySet extends AbstractPropertySet
 {
@@ -251,11 +253,17 @@ public class CDKPropertySet extends AbstractPropertySet
 				{
 					try
 					{
+						IAtomContainer mol = mols[i];
+						if (desc.getIMolecularDescriptor() instanceof LengthOverBreadthDescriptor)
+						{
+							mol = mol.clone();
+							Isotopes.getInstance().configureAtoms(mol);
+						}
 						Double d[];
 						if (Settings.DESC_MIXTURE_HANDLING)
-							d = DescriptorForMixturesHandler.computeCDKDescriptor(desc, mols[i]);
+							d = DescriptorForMixturesHandler.computeCDKDescriptor(desc, mol);
 						else
-							d = desc.computeDescriptor(mols[i]);
+							d = desc.computeDescriptor(mol);
 						if (getSize() != d.length)
 							throw new IllegalStateException("num feature values wrong for '" + this + "' : "
 									+ getSize() + " != " + d.length);
