@@ -116,7 +116,7 @@ public class CDKDescriptor
 
 	public static String getAPILink(Class<?> clazz)
 	{
-		return "http://pele.farmbio.uu.se/nightly/api/" + clazz.getName().replaceAll("\\.", "/");
+		return "http://cdk.github.io/cdk/1.5/docs/api/" + clazz.getName().replaceAll("\\.", "/");
 	}
 
 	public CDKDescriptor(IMolecularDescriptor m)

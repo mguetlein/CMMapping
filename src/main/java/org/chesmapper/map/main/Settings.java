@@ -235,11 +235,11 @@ public class Settings
 	public static String VERSION_STRING = VERSION + ((BUILD_DATE != null) ? (", " + BUILD_DATE) : "");
 	public static String TITLE = "CheS-Mapper";
 	public static String HOMEPAGE = "http://ches-mapper.org";
-	public static String HOMEPAGE_RUNTIME = "http://opentox.informatik.uni-freiburg.de/ches-mapper-wiki/index.php?title=Supported_Formats,_Dataset_Size_and_Algorithm_Runtimes";
-	public static String HOMEPAGE_DOCUMENTATION = "http://opentox.informatik.uni-freiburg.de/ches-mapper-wiki";
-	public static String HOMEPAGE_SPECIFICITY = "http://opentox.informatik.uni-freiburg.de/ches-mapper-wiki/index.php?title=Working_with_the_3D_Viewer#Sorting_of_feature_values";
-	public static String HOMEPAGE_FORMATS = "http://opentox.informatik.uni-freiburg.de/ches-mapper-wiki/index.php?title=Supported_Dataset_Formats_and_Size";
-	public static String HOMEPAGE_EXPORT_SETTINGS = "http://opentox.informatik.uni-freiburg.de/ches-mapper-wiki/index.php?title=Export/Import_Wizard_Settings";
+	public static String HOMEPAGE_RUNTIME = "http://ches-mapper.org/wiki/index.php?title=Supported_Formats,_Dataset_Size_and_Algorithm_Runtimes";
+	public static String HOMEPAGE_DOCUMENTATION = "http://ches-mapper.org/wiki";
+	public static String HOMEPAGE_SPECIFICITY = "http://ches-mapper.org/wiki/index.php?title=Working_with_the_3D_Viewer#Sorting_of_feature_values";
+	public static String HOMEPAGE_FORMATS = "http://ches-mapper.org/wiki/index.php?title=Supported_Dataset_Formats_and_Size";
+	public static String HOMEPAGE_EXPORT_SETTINGS = "http://ches-mapper.org/wiki/index.php?title=Export/Import_Wizard_Settings";
 
 	public static String CONTACT = "Martin Guetlein (ches-mapper@informatik.uni-freiburg.de)";
 
