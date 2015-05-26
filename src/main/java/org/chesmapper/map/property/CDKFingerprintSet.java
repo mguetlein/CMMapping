@@ -9,13 +9,12 @@ import java.util.List;
 import org.chesmapper.map.data.DatasetFile;
 import org.chesmapper.map.data.fragments.MatchEngine;
 import org.chesmapper.map.dataInterface.DefaultFragmentProperty;
-import org.chesmapper.map.dataInterface.FragmentPropertySet;
 import org.chesmapper.map.dataInterface.FragmentProperty.SubstructureType;
+import org.chesmapper.map.dataInterface.FragmentPropertySet;
 import org.chesmapper.map.main.Settings;
 import org.chesmapper.map.main.TaskProvider;
 import org.mg.javalib.util.ArrayUtil;
 import org.mg.javalib.util.CountedSet;
-import org.openscience.cdk.exception.CDKException;
 import org.openscience.cdk.fingerprint.IBitFingerprint;
 import org.openscience.cdk.fingerprint.KlekotaRothFingerprinter;
 import org.openscience.cdk.fingerprint.StandardSubstructureSets;
@@ -111,8 +110,12 @@ public class CDKFingerprintSet extends FragmentPropertySet
 					}
 				}
 			}
-			catch (CDKException e)
+			catch (Exception e)
 			{
+				//needed for this bug: https://sourceforge.net/p/cdk/bugs/1358
+				TaskProvider.warning(
+						"Could not compute cdk fingerprint for compound " + (m + 1) + " (SMILES: " + dataset.getSmiles()[m]
+								+ ")", e.getMessage());
 				Settings.LOGGER.error(e);
 			}
 			if (!TaskProvider.isRunning())
