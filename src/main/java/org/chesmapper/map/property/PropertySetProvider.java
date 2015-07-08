@@ -23,7 +23,7 @@ public class PropertySetProvider implements FeatureMappingWorkflowProvider
 {
 	public static enum PropertySetShortcut
 	{
-		integrated, cdk, ob, obFP2, obFP3, obFP4, obMACCS, fminer, benigniBossa, cdkFunct
+		integrated, cdk, ob, obFP2, obFP3, obFP4, obMACCS, fminer, benigniBossa, cdkFunct, cdkBioAct, maccs, moss
 	}
 
 	public static PropertySetProvider INSTANCE = new PropertySetProvider();
@@ -217,6 +217,9 @@ public class PropertySetProvider implements FeatureMappingWorkflowProvider
 				case benigniBossa:
 					return new CompoundPropertySet[] { ListedFragments
 							.findFromString(ListedFragments.SMARTS_LIST_PREFIX + "ToxTree_BB_CarcMutRules") };
+				case maccs:
+					return new CompoundPropertySet[] { ListedFragments
+							.findFromString(ListedFragments.SMARTS_LIST_PREFIX + "MACCS (OpenBabel MACCS)") };
 				case obFP3:
 					return new CompoundPropertySet[] { OBFingerprintSet.getOBFingerprintSet(OBFingerprintType.FP3) };
 				case obFP4:
@@ -225,6 +228,10 @@ public class PropertySetProvider implements FeatureMappingWorkflowProvider
 					return new CompoundPropertySet[] { OBFingerprintSet.getOBFingerprintSet(OBFingerprintType.MACCS) };
 				case cdkFunct:
 					return new CompoundPropertySet[] { CDKFingerprintSet.FUNCTIONAL_GROUPS };
+				case cdkBioAct:
+					return new CompoundPropertySet[] { CDKFingerprintSet.BIO_ACT };
+				case moss:
+					return new CompoundPropertySet[] { MossFragmentSet.INSTANCE };
 				default:
 					return null;
 			}

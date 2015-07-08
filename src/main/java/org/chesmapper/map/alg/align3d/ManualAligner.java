@@ -42,6 +42,7 @@ public class ManualAligner extends Abstract3DAligner
 	@Override
 	public void algin(DatasetFile dataset, List<ClusterData> clusters, List<CompoundProperty> features)
 	{
+		startRuntime();
 		for (ClusterData c : clusters)
 		{
 			((ClusterDataImpl) c).setSubstructureSmarts(SubstructureSmartsType.MANUAL, smartsProptery.getValue());
@@ -49,6 +50,7 @@ public class ManualAligner extends Abstract3DAligner
 					(MatchEngine) matchEngineProperty.getValue());
 		}
 		alignToSmarts(dataset, clusters);
+		stopRuntime();
 	}
 
 	@Override

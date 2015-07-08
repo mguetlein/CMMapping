@@ -2,6 +2,7 @@ package org.chesmapper.map.appdomain;
 
 import java.util.List;
 
+import org.chesmapper.map.alg.RuntimeOwner;
 import org.chesmapper.map.alg.cluster.DatasetClusterer;
 import org.chesmapper.map.data.DatasetFile;
 import org.chesmapper.map.dataInterface.CompoundData;
@@ -16,7 +17,7 @@ import org.mg.javalib.gui.binloc.Binary;
 import org.mg.javalib.gui.property.Property;
 import org.mg.javalib.util.ArrayUtil;
 
-public abstract class AbstractAppDomainComputer implements AppDomainComputer
+public abstract class AbstractAppDomainComputer extends RuntimeOwner implements AppDomainComputer
 {
 	@Override
 	public String toString()
@@ -44,12 +45,14 @@ public abstract class AbstractAppDomainComputer implements AppDomainComputer
 	public void computeAppDomain(//DatasetFile dataset, 
 			List<CompoundData> compounds, List<NumericProperty> features, double[][] featureDistanceMatrix)
 	{
+		startRuntime();
 		//		this.dataset = dataset;
 		this.compounds = compounds;
 		this.features = features;
 		pValues = new double[compounds.size()];
 		inside = new boolean[compounds.size()];
 		computeAppDomain();
+		stopRuntime();
 	}
 
 	@Override
@@ -66,8 +69,7 @@ public abstract class AbstractAppDomainComputer implements AppDomainComputer
 	{
 		//		return AppDomainPropertySet.create(getShortName(), dataset, pValues,
 		//				dataset.getAppDomainValuesFilePath(this, getShortName() + "propability"));
-		return new DefaultNumericProperty(getShortName() + "-propability", ".",
-				ArrayUtil.toDoubleArray(pValues));
+		return new DefaultNumericProperty(getShortName() + "-propability", ".", ArrayUtil.toDoubleArray(pValues));
 	}
 
 	@Override

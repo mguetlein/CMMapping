@@ -43,6 +43,7 @@ public class MaxFragAligner extends Abstract3DAligner
 	@Override
 	public void algin(DatasetFile dataset, List<ClusterData> clusters, List<CompoundProperty> features)
 	{
+		startRuntime();
 		for (ClusterData clusterData : clusters)
 		{
 			FragmentProperty maxFrag = null;
@@ -78,6 +79,7 @@ public class MaxFragAligner extends Abstract3DAligner
 			}
 		}
 		alignToSmarts(dataset, clusters);
+		stopRuntime();
 	}
 
 	@Override

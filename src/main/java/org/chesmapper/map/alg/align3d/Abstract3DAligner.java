@@ -20,8 +20,8 @@ import org.chesmapper.map.main.TaskProvider;
 import org.chesmapper.map.util.ExternalToolUtil;
 import org.mg.javalib.gui.Message;
 import org.mg.javalib.gui.Messages;
-import org.mg.javalib.io.SDFUtil;
 import org.mg.javalib.io.ExternalTool.ExternalToolError;
+import org.mg.javalib.io.SDFUtil;
 import org.mg.javalib.util.FileUtil;
 import org.openscience.cdk.geometry.alignment.MultiKabschAlignement;
 import org.openscience.cdk.interfaces.IAtomContainer;
@@ -55,7 +55,7 @@ public abstract class Abstract3DAligner extends AbstractAlgorithm implements Thr
 	{
 		SubstructureSmartsType type = getSubstructureSmartsType();
 		alignedFile = dataset.getAlignSDFilePath();
-		if (Settings.CACHING_ENABLED && new File(alignedFile).exists())
+		if (Settings.CACHING_ENABLED && !Settings.FORCE_CACHING_DISABLED_ALIGNER && new File(alignedFile).exists())
 		{
 			Settings.LOGGER.info("3D aligned file already exists: " + alignedFile);
 
@@ -94,7 +94,8 @@ public abstract class Abstract3DAligner extends AbstractAlgorithm implements Thr
 					destFile = dataset.getAlignResultsPerClusterFilePath(count, cluster.getSubstructureSmarts(type)
 							+ matchEngine);
 
-					if (Settings.CACHING_ENABLED && new File(destFile).exists())
+					if (Settings.CACHING_ENABLED && !Settings.FORCE_CACHING_DISABLED_ALIGNER
+							&& new File(destFile).exists())
 					{
 						Settings.LOGGER.info("3D aligned file already exists: " + destFile);
 						aligned = true;

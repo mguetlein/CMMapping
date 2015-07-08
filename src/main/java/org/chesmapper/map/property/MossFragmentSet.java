@@ -8,19 +8,19 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
+import moss.Miner;
+import moss.Miner.MinerAbortable;
+
 import org.chesmapper.map.data.DatasetFile;
 import org.chesmapper.map.data.fragments.FragmentProperties;
 import org.chesmapper.map.data.fragments.MatchEngine;
 import org.chesmapper.map.dataInterface.DefaultFragmentProperty;
-import org.chesmapper.map.dataInterface.FragmentPropertySet;
 import org.chesmapper.map.dataInterface.FragmentProperty.SubstructureType;
+import org.chesmapper.map.dataInterface.FragmentPropertySet;
 import org.chesmapper.map.main.Settings;
 import org.chesmapper.map.main.TaskProvider;
 import org.mg.javalib.util.FileUtil;
 import org.mg.javalib.util.StringUtil;
-
-import moss.Miner;
-import moss.Miner.MinerAbortable;
 
 public class MossFragmentSet extends FragmentPropertySet
 {
@@ -61,7 +61,8 @@ public class MossFragmentSet extends FragmentPropertySet
 	public boolean isCached(DatasetFile dataset)
 	{
 		String path = getMossResultsFilePath(dataset);
-		return Settings.CACHING_ENABLED && new File(path + "_1").exists() && new File(path + "_2").exists();
+		return Settings.CACHING_ENABLED && !Settings.FORCE_CACHING_DISABLED_FEATURES && new File(path + "_1").exists()
+				&& new File(path + "_2").exists();
 	}
 
 	@Override

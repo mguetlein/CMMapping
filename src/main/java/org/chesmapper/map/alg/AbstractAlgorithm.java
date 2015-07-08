@@ -7,7 +7,7 @@ import org.mg.javalib.gui.Messages;
 import org.mg.javalib.gui.binloc.Binary;
 import org.mg.javalib.gui.property.Property;
 
-public abstract class AbstractAlgorithm implements Algorithm
+public abstract class AbstractAlgorithm extends RuntimeOwner implements Algorithm
 {
 	@Override
 	public Property[] getProperties()
@@ -51,5 +51,4 @@ public abstract class AbstractAlgorithm implements Algorithm
 	public void update(DatasetFile dataset)
 	{
 	}
-
 }

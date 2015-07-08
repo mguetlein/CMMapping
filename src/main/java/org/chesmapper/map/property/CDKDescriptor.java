@@ -7,6 +7,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
+import org.chesmapper.map.main.ScreenSetup;
 import org.chesmapper.map.main.Settings;
 import org.mg.javalib.util.ArrayUtil;
 import org.openscience.cdk.DefaultChemObjectBuilder;
@@ -283,6 +284,14 @@ public class CDKDescriptor
 
 	public static void main(String args[])
 	{
-
+		ScreenSetup.INSTANCE = ScreenSetup.DEFAULT;
+		int sum = 0;
+		System.out.println("name,num-values,API-link");
+		for (CDKDescriptor d : getDescriptors())
+		{
+			System.out.println(d.name + "," + d.size + "," + getAPILink(d.m.getClass()));
+			sum += d.size;
+		}
+		System.out.println(sum);
 	}
 }

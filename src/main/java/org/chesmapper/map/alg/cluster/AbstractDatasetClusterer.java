@@ -84,6 +84,8 @@ public abstract class AbstractDatasetClusterer extends AbstractAlgorithm impleme
 	public void clusterDataset(DatasetFile dataset, List<CompoundData> compounds, List<CompoundProperty> features)
 			throws Exception
 	{
+		startRuntime();
+
 		String filename = dataset.getClusterAssignmentFilePath();
 		List<Integer[]> clusterAssignements;
 
@@ -96,7 +98,8 @@ public abstract class AbstractDatasetClusterer extends AbstractAlgorithm impleme
 					break;
 				}
 
-		if (Settings.CACHING_ENABLED && new File(filename).exists() && !interactive)
+		if (Settings.CACHING_ENABLED && !Settings.FORCE_CACHING_DISABLED_CLUSTERING && new File(filename).exists()
+				&& !interactive)
 		{
 			Settings.LOGGER.info("Read cached cluster results from: " + filename);
 			clusterAssignements = ValueFileCache.readCacheInteger(filename);
@@ -242,7 +245,7 @@ public abstract class AbstractDatasetClusterer extends AbstractAlgorithm impleme
 		{
 			//we have to create a new sdf 
 			sdf = dataset.getClusterSDFile();
-			if (Settings.CACHING_ENABLED && new File(sdf).exists())
+			if (Settings.CACHING_ENABLED && !Settings.FORCE_CACHING_DISABLED_CLUSTERING && new File(sdf).exists())
 				Settings.LOGGER.info("multi-asignment cluster-file exists: " + sdf);
 			else
 			{
@@ -268,6 +271,8 @@ public abstract class AbstractDatasetClusterer extends AbstractAlgorithm impleme
 
 		if (count == 0)
 			throw new Error("clusterer returned no cluster");
+
+		stopRuntime();
 	}
 
 	@Override

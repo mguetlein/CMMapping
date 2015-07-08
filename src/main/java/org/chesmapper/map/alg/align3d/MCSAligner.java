@@ -38,10 +38,12 @@ public class MCSAligner extends Abstract3DAligner
 	@Override
 	public void algin(DatasetFile dataset, List<ClusterData> clusters, List<CompoundProperty> features)
 	{
+		startRuntime();
 		ComputeMCS.computeMCS(dataset, clusters);
 		if (!TaskProvider.isRunning())
 			return;
 		alignToSmarts(dataset, clusters);
+		stopRuntime();
 	}
 
 	@Override

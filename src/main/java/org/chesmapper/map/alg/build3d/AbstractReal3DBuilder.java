@@ -59,6 +59,7 @@ public abstract class AbstractReal3DBuilder extends Abstract3DBuilder
 	@Override
 	public void build3D(final DatasetFile dataset) throws Exception
 	{
+		startRuntime();
 		String sdfFile = dataset.getSDF();
 		File orig = new File(sdfFile);
 		if (!orig.exists())
@@ -70,7 +71,9 @@ public abstract class AbstractReal3DBuilder extends Abstract3DBuilder
 			String finalFile = dataset.get3DBuilderSDFilePath(this);
 
 			File threeD = new File(finalFile);
-			if (!threeD.exists() || !Settings.CACHING_ENABLED)
+			if (threeD.exists() && Settings.CACHING_ENABLED && !Settings.FORCE_CACHING_DISABLED_BUILDER)
+				Settings.LOGGER.info("3d already computed: " + finalFile);
+			else
 			{
 				Settings.LOGGER.info("computing 3d: " + finalFile);
 				running = true;
@@ -122,13 +125,13 @@ public abstract class AbstractReal3DBuilder extends Abstract3DBuilder
 				if (!FileUtil.robustRenameTo(tmpFile, new File(finalFile)))
 					throw new Error("renaming or delete file error");
 			}
-			else
-				Settings.LOGGER.info("3d already computed: " + finalFile);
+
 			threeDFilename = finalFile;
 		}
 		finally
 		{
 			running = false;
+			stopRuntime();
 		}
 	}
 

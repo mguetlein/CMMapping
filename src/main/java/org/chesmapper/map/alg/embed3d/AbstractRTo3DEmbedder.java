@@ -56,12 +56,13 @@ public abstract class AbstractRTo3DEmbedder extends Abstract3DEmbedder
 		try
 		{
 			String featureTableFile = dataset.getFeatureTableFilePath("table");
-			if (!Settings.CACHING_ENABLED || !new File(featureTableFile).exists())
+			if (Settings.CACHING_ENABLED && !Settings.FORCE_CACHING_DISABLED_EMBEDDING
+					&& new File(featureTableFile).exists())
+				Settings.LOGGER.info("load cached features from " + featureTableFile);
+			else
 				ExportRUtil.toRTable(features,
 						CompoundPropertyUtil.valuesReplaceNullWithMedian(features, instances, dataset),
 						featureTableFile);
-			else
-				Settings.LOGGER.info("load cached features from " + featureTableFile);
 
 			Settings.LOGGER.info("Using r-embedder " + getName() + " with properties: "
 					+ PropertyUtil.toString(getProperties()));

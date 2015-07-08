@@ -26,7 +26,7 @@ public class ComputeMCS
 			String cacheFile = dataset.getAlignResultsPerClusterFilePath(count, "mcs");
 
 			String smarts = null;
-			if (Settings.CACHING_ENABLED && new File(cacheFile).exists())
+			if (Settings.CACHING_ENABLED && !Settings.FORCE_CACHING_DISABLED_ALIGNER && new File(cacheFile).exists())
 			{
 				Settings.LOGGER.info("Read cached mcs from: " + cacheFile);
 				smarts = FileUtil.readStringFromFile(cacheFile);

@@ -80,6 +80,7 @@ public class CheSMapping
 					build3d(dataset, threeDGenerator);
 
 					ClusteringData clustering = new ClusteringData(dataset);
+					clustering.setThreeDBuilder(threeDGenerator);
 
 					if (!TaskProvider.isRunning())
 						return;
@@ -486,6 +487,11 @@ public class CheSMapping
 	public int getNumFeatureSets()
 	{
 		return featureComputer.getNumFeatureSets();
+	}
+
+	public long getFeatureComputationRuntime()
+	{
+		return featureComputer.getRuntime();
 	}
 
 }

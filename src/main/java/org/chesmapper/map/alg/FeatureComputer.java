@@ -17,4 +17,6 @@ public interface FeatureComputer
 	public List<CompoundData> getCompounds();
 
 	public int getNumFeatureSets();
+
+	public long getRuntime();
 }

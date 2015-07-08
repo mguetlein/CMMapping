@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.chesmapper.map.alg.FeatureComputer;
+import org.chesmapper.map.alg.RuntimeOwner;
 import org.chesmapper.map.dataInterface.CompoundData;
 import org.chesmapper.map.dataInterface.CompoundProperty;
 import org.chesmapper.map.dataInterface.CompoundPropertySet;
@@ -12,7 +13,7 @@ import org.chesmapper.map.dataInterface.NumericProperty;
 import org.chesmapper.map.main.TaskProvider;
 import org.chesmapper.map.property.IntegratedPropertySet;
 
-public class DefaultFeatureComputer implements FeatureComputer
+public class DefaultFeatureComputer extends RuntimeOwner implements FeatureComputer
 {
 	CompoundPropertySet compoundPropertySets[];
 
@@ -33,6 +34,8 @@ public class DefaultFeatureComputer implements FeatureComputer
 	@Override
 	public void computeFeatures(DatasetFile dataset)
 	{
+		startRuntime();
+
 		features = new ArrayList<CompoundProperty>();
 		properties = new ArrayList<CompoundProperty>();
 		compounds = new ArrayList<CompoundData>();
@@ -121,6 +124,8 @@ public class DefaultFeatureComputer implements FeatureComputer
 					c.setStringValue(p, s[i]);
 			}
 		}
+
+		stopRuntime();
 	}
 
 	@Override

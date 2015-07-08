@@ -42,12 +42,13 @@ public abstract class AbstractRClusterer extends AbstractDatasetClusterer
 		try
 		{
 			String featureTableFile = dataset.getFeatureTableFilePath("table");
-			if (!Settings.CACHING_ENABLED || !new File(featureTableFile).exists())
+			if (Settings.CACHING_ENABLED && !Settings.FORCE_CACHING_DISABLED_CLUSTERING
+					&& new File(featureTableFile).exists())
+				Settings.LOGGER.info("load cached features from " + featureTableFile);
+			else
 				ExportRUtil.toRTable(features,
 						CompoundPropertyUtil.valuesReplaceNullWithMedian(features, compounds, dataset),
 						featureTableFile);
-			else
-				Settings.LOGGER.info("load cached features from " + featureTableFile);
 
 			Settings.LOGGER.info("Using r-clusterer " + getName() + " with properties: "
 					+ PropertyUtil.toString(getProperties()));

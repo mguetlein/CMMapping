@@ -13,8 +13,8 @@ import org.chesmapper.map.data.DatasetFile;
 import org.chesmapper.map.data.OpenBabelSmartsHandler;
 import org.chesmapper.map.data.fragments.FragmentProperties;
 import org.chesmapper.map.data.fragments.MatchEngine;
-import org.chesmapper.map.dataInterface.FragmentPropertySet;
 import org.chesmapper.map.dataInterface.FragmentProperty.SubstructureType;
+import org.chesmapper.map.dataInterface.FragmentPropertySet;
 import org.chesmapper.map.main.BinHandler;
 import org.chesmapper.map.main.Settings;
 import org.chesmapper.map.main.TaskProvider;
@@ -191,7 +191,7 @@ public class ListedFragmentSet extends FragmentPropertySet
 		String smartsMatchFile = getSmartsMatchCacheFile(dataset);
 
 		List<boolean[]> matches = null;
-		if (Settings.CACHING_ENABLED && new File(smartsMatchFile).exists())
+		if (Settings.CACHING_ENABLED && !Settings.FORCE_CACHING_DISABLED_FEATURES && new File(smartsMatchFile).exists())
 		{
 			Settings.LOGGER.info("Read cached matches from file: " + smartsMatchFile);
 			try

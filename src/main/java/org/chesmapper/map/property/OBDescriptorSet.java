@@ -19,8 +19,8 @@ import org.chesmapper.map.main.TaskProvider;
 import org.chesmapper.map.util.ValueFileCache;
 import org.mg.javalib.gui.binloc.Binary;
 import org.mg.javalib.util.ArrayUtil;
-import org.mg.javalib.util.ListUtil;
 import org.mg.javalib.util.FileUtil.UnexpectedNumColsException;
+import org.mg.javalib.util.ListUtil;
 
 public class OBDescriptorSet implements CompoundPropertySet
 {
@@ -176,7 +176,7 @@ public class OBDescriptorSet implements CompoundPropertySet
 	{
 		String cache = cacheFile(dataset);
 		String vals[] = null;
-		if (Settings.CACHING_ENABLED && new File(cache).exists())
+		if (Settings.CACHING_ENABLED && !Settings.FORCE_CACHING_DISABLED_FEATURES && new File(cache).exists())
 		{
 			Settings.LOGGER.info("reading ob descriptors from: " + cache);
 			try

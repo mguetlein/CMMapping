@@ -84,6 +84,8 @@ public abstract class Abstract3DEmbedder extends AbstractAlgorithm implements Th
 	public void embedDataset(DatasetFile dataset, List<CompoundData> instances, List<CompoundProperty> features)
 			throws Exception //boolean[] trainInstances
 	{
+		startRuntime();
+
 		this.dataset = dataset;
 		this.features = features;
 		this.instances = instances;
@@ -100,7 +102,8 @@ public abstract class Abstract3DEmbedder extends AbstractAlgorithm implements Th
 		}
 		distFilename = dataset.getEmbeddingResultsFilePath("dist");
 
-		boolean filesFound = Settings.CACHING_ENABLED && new File(embedFilename).exists();
+		boolean filesFound = Settings.CACHING_ENABLED && !Settings.FORCE_CACHING_DISABLED_EMBEDDING
+				&& new File(embedFilename).exists();
 		if (storesDistances())
 			filesFound &= new File(distFilename).exists();
 		if (!Settings.BIG_DATA)
@@ -160,5 +163,7 @@ public abstract class Abstract3DEmbedder extends AbstractAlgorithm implements Th
 
 		if (positions.size() != instances.size())
 			throw new IllegalStateException("illegal num positions " + positions.size() + " " + instances.size());
+
+		stopRuntime();
 	}
 }

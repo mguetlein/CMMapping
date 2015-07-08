@@ -26,4 +26,6 @@ public interface Algorithm
 	public Property getRandomRestartProperty();
 
 	public void update(DatasetFile dataset);
+
+	public long getRuntime();
 }

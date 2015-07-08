@@ -99,6 +99,11 @@ public class Settings
 	public static Random RANDOM = new Random();
 	public static Boolean DBG = false;
 	public static Boolean CACHING_ENABLED = true;
+	public static Boolean FORCE_CACHING_DISABLED_BUILDER = false;
+	public static Boolean FORCE_CACHING_DISABLED_CLUSTERING = false;
+	public static Boolean FORCE_CACHING_DISABLED_FEATURES = false;
+	public static Boolean FORCE_CACHING_DISABLED_EMBEDDING = false;
+	public static Boolean FORCE_CACHING_DISABLED_ALIGNER = false;
 	public static Boolean DESC_MIXTURE_HANDLING = false;
 	public static boolean SKIP_REDUNDANT_FEATURES = false;
 	public static boolean BIG_DATA = false;

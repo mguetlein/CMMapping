@@ -214,7 +214,7 @@ public class CDKPropertySet extends AbstractPropertySet
 		String cache = cacheFile(dataset);
 
 		List<Double[]> vv = null;
-		if (Settings.CACHING_ENABLED && new File(cache).exists())
+		if (Settings.CACHING_ENABLED && !Settings.FORCE_CACHING_DISABLED_FEATURES && new File(cache).exists())
 		{
 			Settings.LOGGER.info("reading cdk props from: " + cache);
 			try
