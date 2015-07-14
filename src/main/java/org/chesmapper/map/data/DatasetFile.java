@@ -231,7 +231,7 @@ public class DatasetFile extends FilenameProvider
 	public void loadDataset() throws Exception
 	{
 		featureService.loadDataset(this);
-		if (getSDF() == null)
+		if (getSDF() == null || !featureService.has2D(this))
 		{
 			if (!TaskProvider.isRunning())
 				return;

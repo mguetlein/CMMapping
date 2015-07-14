@@ -66,6 +66,7 @@ import org.openscience.cdk.tools.manipulator.ChemFileManipulator;
 public class FeatureService
 {
 	private HashMap<DatasetFile, IAtomContainer[]> fileToCompounds = new HashMap<DatasetFile, IAtomContainer[]>();
+	private HashMap<DatasetFile, Boolean> fileHas2D = new HashMap<DatasetFile, Boolean>();
 	private HashMap<DatasetFile, Boolean> fileHas3D = new HashMap<DatasetFile, Boolean>();
 	private HashMap<DatasetFile, LinkedHashSet<IntegratedPropertySet>> integratedProperties = new HashMap<DatasetFile, LinkedHashSet<IntegratedPropertySet>>();
 	private HashMap<DatasetFile, IntegratedPropertySet> integratedSmiles = new HashMap<DatasetFile, IntegratedPropertySet>();
@@ -117,6 +118,7 @@ public class FeatureService
 		{
 			fileToCompounds.remove(dataset);
 			fileHas3D.remove(dataset);
+			fileHas2D.remove(dataset);
 			integratedProperties.remove(dataset);
 			integratedSmiles.remove(dataset);
 			cdkSmiles.remove(dataset);
@@ -719,6 +721,34 @@ public class FeatureService
 			fileHas3D.put(dataset, has3D);
 		}
 		return fileHas3D.get(dataset);
+	}
+
+	public synchronized boolean has2D(DatasetFile dataset)
+	{
+		if (!fileToCompounds.containsKey(dataset))
+			return false;
+		if (fileHas2D.get(dataset) == null)
+		{
+			boolean has2D = false;
+
+			IAtomContainer mols[] = fileToCompounds.get(dataset);
+			for (IAtomContainer molecule : mols)
+			{
+				for (int i = 0; i < molecule.getAtomCount(); i++)
+				{
+					Point3d p = molecule.getAtom(i).getPoint3d();
+					if (p != null && (p.x != 0 || p.y != 0))
+					{
+						has2D = true;
+						break;
+					}
+				}
+				if (has2D)
+					break;
+			}
+			fileHas2D.put(dataset, has2D);
+		}
+		return fileHas2D.get(dataset);
 	}
 
 	public static boolean[] generateCDK3D(DatasetFile dataset, String threeDFilename, String forcefield)
