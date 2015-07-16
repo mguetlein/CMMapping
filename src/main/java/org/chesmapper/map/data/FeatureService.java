@@ -16,6 +16,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.Vector;
 
+import javax.vecmath.Point2d;
 import javax.vecmath.Point3d;
 
 import org.chesmapper.map.dataInterface.CompoundProperty;
@@ -438,7 +439,7 @@ public class FeatureService
 					reader = new ReaderFactory().createReader(new InputStreamReader(new FileInputStream(file)));
 				if (reader == null)
 					throw new IllegalArgumentException("Could not determine input file type");
-				else if (reader instanceof MDLReader || reader instanceof MDLV2000Reader)
+				else if (reader instanceof MDLReader || reader instanceof MDLV2000Reader || reader instanceof SDFReader)
 					dataset.setSDF(dataset.getLocalPath());
 				IChemFile content = (IChemFile) reader.read((IChemObject) new ChemFile());
 				list = ChemFileManipulator.getAllAtomContainers(content);
@@ -736,8 +737,11 @@ public class FeatureService
 			{
 				for (int i = 0; i < molecule.getAtomCount(); i++)
 				{
+					// check both to make sure
+					// apparently CDK sometimes only sets one
 					Point3d p = molecule.getAtom(i).getPoint3d();
-					if (p != null && (p.x != 0 || p.y != 0))
+					Point2d p2 = molecule.getAtom(i).getPoint2d();
+					if ((p != null && (p.x != 0 || p.y != 0)) || (p2 != null && (p2.x != 0 || p2.y != 0)))
 					{
 						has2D = true;
 						break;
@@ -841,6 +845,9 @@ public class FeatureService
 
 				for (int cIndex : compoundOrigIndices)
 				{
+					TaskProvider.verbose("Create 2D structure for compound " + (cIndex + 1) + "/"
+							+ compoundOrigIndices.length);
+
 					IAtomContainer molecule = molecules[cIndex];
 
 					IAtomContainerSet oldSet = ConnectivityChecker.partitionIntoMolecules(molecule);
