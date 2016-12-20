@@ -25,8 +25,10 @@ import org.mg.javalib.util.OSUtil;
 
 public class BinHandler
 {
-	public static Binary BABEL_BINARY = new Binary("babel", "CM_BABEL_PATH", Settings.OPENBABEL_STRING);
-	public static Binary RSCRIPT_BINARY = new Binary("Rscript", "CM_RSCRIPT_PATH", Settings.R_STRING);
+	public static Binary BABEL_BINARY = new Binary("babel", "CM_BABEL_PATH",
+			Settings.OPENBABEL_STRING);
+	public static Binary RSCRIPT_BINARY = new Binary("Rscript", "CM_RSCRIPT_PATH",
+			Settings.R_STRING);
 
 	public static class FminerBinary extends Binary
 	{
@@ -39,12 +41,15 @@ public class BinHandler
 		{
 			if (!isFound())
 				return null;
-			String bbrcLib = FileUtil.getParent(FileUtil.getParent(getLocation())) + "/libbbrc/libbbrc.so";
+			String bbrcLib = FileUtil.getParent(FileUtil.getParent(getLocation()))
+					+ "/libbbrc/libbbrc.so";
 			if (!new File(bbrcLib).exists())
-				bbrcLib = FileUtil.getParent(FileUtil.getParent(getLocation())) + "/libbbrc/bbrc.so";
+				bbrcLib = FileUtil.getParent(FileUtil.getParent(getLocation()))
+						+ "/libbbrc/bbrc.so";
 			if (!new File(bbrcLib).exists())
 			{
-				Settings.LOGGER.error("BBRC LIB not found, should be at " + bbrcLib + " , libbbrc.so not found either");
+				Settings.LOGGER.error("BBRC LIB not found, should be at " + bbrcLib
+						+ " , libbbrc.so not found either");
 				return null;
 			}
 			else
@@ -85,7 +90,8 @@ public class BinHandler
 		for (Binary binary : bins)
 		{
 			if (binary.isFound())
-				Settings.LOGGER.info("External program " + binary.getCommand() + " found at " + binary.getLocation());
+				Settings.LOGGER.info("External program " + binary.getCommand() + " found at "
+						+ binary.getLocation());
 			else
 				Settings.LOGGER.warn("External program " + binary.getCommand() + " not found");
 		}
@@ -104,8 +110,8 @@ public class BinHandler
 	public static OBWrapper getOBWrapper()
 	{
 		if (OB_WRAPPER == null)
-			OB_WRAPPER = new OBWrapper(BABEL_BINARY.getLocation(), BABEL_BINARY.getSisterCommandLocation("obabel"),
-					Settings.LOGGER);
+			OB_WRAPPER = new OBWrapper(BABEL_BINARY.getLocation(),
+					BABEL_BINARY.getSisterCommandLocation("obabel"), Settings.LOGGER);
 		return OB_WRAPPER;
 	}
 

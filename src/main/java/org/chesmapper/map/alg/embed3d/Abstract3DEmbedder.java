@@ -56,7 +56,8 @@ public abstract class Abstract3DEmbedder extends AbstractAlgorithm implements Th
 	}
 
 	@Override
-	public Messages getMessages(DatasetFile dataset, FeatureInfo featureInfo, DatasetClusterer clusterer)
+	public Messages getMessages(DatasetFile dataset, FeatureInfo featureInfo,
+			DatasetClusterer clusterer)
 	{
 		Messages m = super.getMessages(dataset, featureInfo, clusterer);
 		if (requiresFeatures() && !featureInfo.isFeaturesSelected())
@@ -81,8 +82,8 @@ public abstract class Abstract3DEmbedder extends AbstractAlgorithm implements Th
 	protected abstract boolean storesDistances();
 
 	@Override
-	public void embedDataset(DatasetFile dataset, List<CompoundData> instances, List<CompoundProperty> features)
-			throws Exception //boolean[] trainInstances
+	public void embedDataset(DatasetFile dataset, List<CompoundData> instances,
+			List<CompoundProperty> features) throws Exception //boolean[] trainInstances
 	{
 		this.dataset = dataset;
 		this.features = features;
@@ -96,7 +97,8 @@ public abstract class Abstract3DEmbedder extends AbstractAlgorithm implements Th
 		for (CorrelationType t : CorrelationType.types())
 		{
 			corrValueFilenames.put(t, dataset.getEmbeddingResultsFilePath(t.name().toLowerCase()));
-			corrPropFilenames.put(t, dataset.getEmbeddingResultsFilePath(t.name().toLowerCase() + "Prop"));
+			corrPropFilenames.put(t,
+					dataset.getEmbeddingResultsFilePath(t.name().toLowerCase() + "Prop"));
 		}
 		distFilename = dataset.getEmbeddingResultsFilePath("dist");
 
@@ -123,8 +125,10 @@ public abstract class Abstract3DEmbedder extends AbstractAlgorithm implements Th
 					correlationValue.put(t, DoubleUtil.parseDouble(FileUtil.readStringFromFile(f)));
 
 					f = corrPropFilenames.get(t);
-					Settings.LOGGER.info("Read cached embedding " + t.name() + " property from: " + f);
-					corrPropValues.put(t, ArrayUtil.toPrimitiveDoubleArray(ValueFileCache.readCacheDouble2(f)));
+					Settings.LOGGER
+							.info("Read cached embedding " + t.name() + " property from: " + f);
+					corrPropValues.put(t,
+							ArrayUtil.toPrimitiveDoubleArray(ValueFileCache.readCacheDouble2(f)));
 				}
 				// compute, as this might take a few seconds on larger datasets, to have it available later
 				if (getFeatureDistanceMatrix() == null)
@@ -143,12 +147,17 @@ public abstract class Abstract3DEmbedder extends AbstractAlgorithm implements Th
 				for (CorrelationType t : CorrelationType.types())
 				{
 					TaskProvider.debug("Compute " + t.name());
-					correlationValue.put(t, EmbedUtil.computeCorrelation(t, positions, getFeatureDistanceMatrix()));
-					TaskProvider.debug("Store embedding " + t.name() + " to: " + corrValueFilenames.get(t));
-					FileUtil.writeStringToFile(corrValueFilenames.get(t), correlationValue.get(t) + "");
+					correlationValue.put(t,
+							EmbedUtil.computeCorrelation(t, positions, getFeatureDistanceMatrix()));
+					TaskProvider.debug(
+							"Store embedding " + t.name() + " to: " + corrValueFilenames.get(t));
+					FileUtil.writeStringToFile(corrValueFilenames.get(t),
+							correlationValue.get(t) + "");
 
-					corrPropValues.put(t, EmbedUtil.computeCorrelations(t, positions, getFeatureDistanceMatrix()));
-					ValueFileCache.writeCacheDouble2(corrPropFilenames.get(t), ArrayUtil.toList(corrPropValues.get(t)));
+					corrPropValues.put(t, EmbedUtil.computeCorrelations(t, positions,
+							getFeatureDistanceMatrix()));
+					ValueFileCache.writeCacheDouble2(corrPropFilenames.get(t),
+							ArrayUtil.toList(corrPropValues.get(t)));
 				}
 			}
 		}
@@ -159,6 +168,7 @@ public abstract class Abstract3DEmbedder extends AbstractAlgorithm implements Th
 		}
 
 		if (positions.size() != instances.size())
-			throw new IllegalStateException("illegal num positions " + positions.size() + " " + instances.size());
+			throw new IllegalStateException(
+					"illegal num positions " + positions.size() + " " + instances.size());
 	}
 }

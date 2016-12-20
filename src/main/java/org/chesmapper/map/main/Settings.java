@@ -36,14 +36,16 @@ public class Settings
 		{
 			Font font = new Font("Dialog", Font.PLAIN, (int) ScreenSetup.INSTANCE.getFontSize());
 			UIDefaults uiDefaults = UIManager.getDefaults();
-			String comps[] = { "Label", "CheckBox", "List", "RadioButton", "Table", "TextField", "Button", "TextArea",
-					"Tree", "ToggleButton", "ComboBox", "Spinner", "TextPane", "Panel", "PopupMenu", "OptionPane",
-					"ScrollPane", "MenuBar", "FormattedTextField", "MenuItem", "Menu", "CheckBoxMenuItem",
+			String comps[] = { "Label", "CheckBox", "List", "RadioButton", "Table", "TextField",
+					"Button", "TextArea", "Tree", "ToggleButton", "ComboBox", "Spinner", "TextPane",
+					"Panel", "PopupMenu", "OptionPane", "ScrollPane", "MenuBar",
+					"FormattedTextField", "MenuItem", "Menu", "CheckBoxMenuItem",
 					"RadioButtonMenuItem" };
 			for (String s : comps)
 			{
 				int style;
-				if (s.equals("Label") || s.equals("RadioButton") || s.equals("List") || s.equals("CheckBox"))
+				if (s.equals("Label") || s.equals("RadioButton") || s.equals("List")
+						|| s.equals("CheckBox"))
 					style = Font.PLAIN;
 				else
 				{
@@ -89,7 +91,8 @@ public class Settings
 		return MessageFormat.format(text.getString(key), param1, param2, param3);
 	}
 
-	public static String text(String key, String param1, String param2, String param3, String param4)
+	public static String text(String key, String param1, String param2, String param3,
+			String param4)
 	{
 		return MessageFormat.format(text.getString(key), param1, param2, param3, param4);
 	}
@@ -104,17 +107,18 @@ public class Settings
 	public static boolean BIG_DATA = false;
 
 	public static ImageIcon CHES_MAPPER_IMAGE = ImageLoader.getImage(ImageLoader.Image.ches_mapper);
-	public static ImageIcon CHES_MAPPER_ICON = ImageLoader.getImage(ImageLoader.Image.ches_mapper_icon);
+	public static ImageIcon CHES_MAPPER_ICON = ImageLoader
+			.getImage(ImageLoader.Image.ches_mapper_icon);
 	public static ImageIcon OPENTOX_IMAGE = ImageLoader.getImage(ImageLoader.Image.opentox);
 
 	static
 	{
 		if (ScreenSetup.INSTANCE.getWizardSize().getWidth() <= 800)
 		{
-			CHES_MAPPER_IMAGE = new ImageIcon(Settings.CHES_MAPPER_IMAGE.getImage().getScaledInstance(-1, 100,
-					Image.SCALE_SMOOTH));
-			OPENTOX_IMAGE = new ImageIcon(Settings.OPENTOX_IMAGE.getImage().getScaledInstance(80, -1,
-					Image.SCALE_SMOOTH));
+			CHES_MAPPER_IMAGE = new ImageIcon(Settings.CHES_MAPPER_IMAGE.getImage()
+					.getScaledInstance(-1, 100, Image.SCALE_SMOOTH));
+			OPENTOX_IMAGE = new ImageIcon(Settings.OPENTOX_IMAGE.getImage().getScaledInstance(80,
+					-1, Image.SCALE_SMOOTH));
 		}
 	}
 
@@ -153,9 +157,11 @@ public class Settings
 		}
 	}
 
-	public static String BASE_DIR = System.getProperty("user.home") + File.separator + ".ches-mapper";
+	public static String BASE_DIR = System.getProperty("user.home") + File.separator
+			+ ".ches-mapper";
 	public static String CACHE_DIR = BASE_DIR + File.separator + "cache";
-	public static String STRUCTURAL_FRAGMENT_DIR = BASE_DIR + File.separator + "structural_fragments";
+	public static String STRUCTURAL_FRAGMENT_DIR = BASE_DIR + File.separator
+			+ "structural_fragments";
 	public static String MODIFIED_BABEL_DATA_DIR = BASE_DIR + File.separator + "babel_data";
 	public static String R_LIB_DIR = BASE_DIR + File.separator + "r_libs";
 	public static String BABEL_3D_CACHE = BASE_DIR + File.separator + "babel3d";
@@ -165,8 +171,8 @@ public class Settings
 
 	static
 	{
-		String legal_dirs[] = new String[] { BASE_DIR, CACHE_DIR, STRUCTURAL_FRAGMENT_DIR, MODIFIED_BABEL_DATA_DIR,
-				R_LIB_DIR, BABEL_3D_CACHE };
+		String legal_dirs[] = new String[] { BASE_DIR, CACHE_DIR, STRUCTURAL_FRAGMENT_DIR,
+				MODIFIED_BABEL_DATA_DIR, R_LIB_DIR, BABEL_3D_CACHE };
 		String legal_files[] = new String[] { LOG_FILE };
 
 		for (String d : legal_dirs)
@@ -186,7 +192,8 @@ public class Settings
 			}
 			else
 			{
-				if (!PropHandler.isPropFile(f.getName()) && ArrayUtil.indexOf(legal_files, f.getAbsolutePath()) == -1)
+				if (!PropHandler.isPropFile(f.getName())
+						&& ArrayUtil.indexOf(legal_files, f.getAbsolutePath()) == -1)
 					f.delete();
 			}
 
@@ -232,7 +239,8 @@ public class Settings
 	public static String FMINER_STRING = text("lib.fminer");
 	public static String WEKA_STRING = text("lib.weka", weka.core.Version.VERSION);
 
-	public static String VERSION_STRING = VERSION + ((BUILD_DATE != null) ? (", " + BUILD_DATE) : "");
+	public static String VERSION_STRING = VERSION
+			+ ((BUILD_DATE != null) ? (", " + BUILD_DATE) : "");
 	public static String TITLE = "CheS-Mapper";
 	public static String HOMEPAGE = "http://ches-mapper.org";
 	public static String HOMEPAGE_RUNTIME = "http://ches-mapper.org/wiki/index.php?title=Supported_Formats,_Dataset_Size_and_Algorithm_Runtimes";
@@ -282,7 +290,8 @@ public class Settings
 
 	public static String destinationFile(DatasetFile dataset, String filenameSuffix)
 	{
-		return destinationFile(dataset.getShortName() + "." + dataset.getMD5() + "." + filenameSuffix);
+		return destinationFile(
+				dataset.getShortName() + "." + dataset.getMD5() + "." + filenameSuffix);
 	}
 
 	public static String destinationFile(String destinationFilename)

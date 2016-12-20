@@ -93,12 +93,12 @@ public abstract class AbstractWizardPanel extends WizardPanel
 		{
 
 			@Override
-			public Component getListCellRendererComponent(JList<?> list, Object value, int index, boolean isSelected,
-					boolean cellHasFocus)
+			public Component getListCellRendererComponent(JList<?> list, Object value, int index,
+					boolean isSelected, boolean cellHasFocus)
 			{
 				Algorithm a = (Algorithm) value;
-				JLabel l = (JLabel) super.getListCellRendererComponent(list, a.getName(), index, isSelected,
-						cellHasFocus);
+				JLabel l = (JLabel) super.getListCellRendererComponent(list, a.getName(), index,
+						isSelected, cellHasFocus);
 				if (a.getBinary() != null && !a.getBinary().isFound())
 				{
 					l.setFont(disabledFont);
@@ -207,7 +207,8 @@ public abstract class AbstractWizardPanel extends WizardPanel
 			return;
 
 		listSelectedAlgorithm = algProvider.getAlgorithms()[index];
-		binaryFound = listSelectedAlgorithm.getBinary() == null || listSelectedAlgorithm.getBinary().isFound();
+		binaryFound = listSelectedAlgorithm.getBinary() == null
+				|| listSelectedAlgorithm.getBinary().isFound();
 
 		if (!cards.containsKey(listSelectedAlgorithm.toString()))
 		{
@@ -226,18 +227,21 @@ public abstract class AbstractWizardPanel extends WizardPanel
 			};
 			descriptionPanel.addParagraph(listSelectedAlgorithm.getDescription());
 			descriptionPanel.setDialogTitle(listSelectedAlgorithm.getName());
-			descriptionPanel.setPreferredWith(AbstractWizardPanel.this.getPreferredSize().width - 20);
+			descriptionPanel
+					.setPreferredWith(AbstractWizardPanel.this.getPreferredSize().width - 20);
 			builder.append(descriptionPanel);
 
 			if (listSelectedAlgorithm.getBinary() != null)
 			{
-				JComponent pp = BinHandler.getBinaryComponent(listSelectedAlgorithm.getBinary(), wizard);
+				JComponent pp = BinHandler.getBinaryComponent(listSelectedAlgorithm.getBinary(),
+						wizard);
 				pp.setBorder(new EmptyBorder(0, 0, 5, 0));
 				builder.append(pp);
 			}
 
-			PropertyPanel clusterPropertyPanel = new PropertyPanel(listSelectedAlgorithm.getProperties(),
-					PropHandler.getProperties(), PropHandler.getPropertiesFile());
+			PropertyPanel clusterPropertyPanel = new PropertyPanel(
+					listSelectedAlgorithm.getProperties(), PropHandler.getProperties(),
+					PropHandler.getPropertiesFile());
 
 			if (listSelectedAlgorithm.getProperties() != null)
 			{
@@ -252,13 +256,15 @@ public abstract class AbstractWizardPanel extends WizardPanel
 			// put panel in hash in has to store properties
 			cards.put(listSelectedAlgorithm.toString(), clusterPropertyPanel);
 		}
-		((CardLayout) propertyPanel.getLayout()).show(propertyPanel, listSelectedAlgorithm.toString());
+		((CardLayout) propertyPanel.getLayout()).show(propertyPanel,
+				listSelectedAlgorithm.toString());
 
 		// HACK: jsplitpane and cardlayout dont quite like themselves,
 		// the preferred size of the card-layout-component has to be decreased by hand
 		for (int i = 0; i < propertyPanel.getComponentCount(); i++)
 		{
-			if (((JPanel) propertyPanel.getComponent(i)).getName().equals(listSelectedAlgorithm.toString()))
+			if (((JPanel) propertyPanel.getComponent(i)).getName()
+					.equals(listSelectedAlgorithm.toString()))
 			{
 				propertyPanel.setPreferredSize(propertyPanel.getComponent(i).getPreferredSize());
 				break;

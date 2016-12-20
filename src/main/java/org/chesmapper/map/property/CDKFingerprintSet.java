@@ -25,15 +25,16 @@ public class CDKFingerprintSet extends FragmentPropertySet
 {
 	static final CDKFingerprintSet[] FINGERPRINTS = new CDKFingerprintSet[2];
 	static CDKFingerprintSet FUNCTIONAL_GROUPS;
+	static CDKFingerprintSet BIO_ACT;
 	static
 	{
 		try
 		{
 			FUNCTIONAL_GROUPS = new CDKFingerprintSet("CDK Functional Groups", new SubstructureFingerprinter(
 					StandardSubstructureSets.getFunctionalGroupSMARTS()));
+			BIO_ACT = new CDKFingerprintSet("CDK Klekota-Roth Biological Activity", new KlekotaRothFingerprinter());
 			FINGERPRINTS[0] = FUNCTIONAL_GROUPS;
-			FINGERPRINTS[1] = new CDKFingerprintSet("CDK Klekota-Roth Biological Activity",
-					new KlekotaRothFingerprinter());
+			FINGERPRINTS[1] = BIO_ACT;
 		}
 		catch (Exception e)
 		{
@@ -113,9 +114,8 @@ public class CDKFingerprintSet extends FragmentPropertySet
 			catch (Exception e)
 			{
 				//needed for this bug: https://sourceforge.net/p/cdk/bugs/1358
-				TaskProvider.warning(
-						"Could not compute cdk fingerprint for compound " + (m + 1) + " (SMILES: " + dataset.getSmiles()[m]
-								+ ")", e.getMessage());
+				TaskProvider.warning("Could not compute cdk fingerprint for compound " + (m + 1) + " (SMILES: "
+						+ dataset.getSmiles()[m] + ")", e.getMessage());
 				Settings.LOGGER.error(e);
 			}
 			if (!TaskProvider.isRunning())

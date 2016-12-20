@@ -43,11 +43,14 @@ public abstract class AbstractRTo3DEmbedder extends Abstract3DEmbedder
 	{
 		processMessages.clear();
 		if (features.size() < getMinNumFeatures())
-			throw new EmbedException(this, getShortName() + " requires for embedding at least " + getMinNumFeatures()
-					+ " features with non-unique values (num features is '" + features.size() + "')");
+			throw new EmbedException(this,
+					getShortName() + " requires for embedding at least " + getMinNumFeatures()
+							+ " features with non-unique values (num features is '"
+							+ features.size() + "')");
 		if (instances.size() < getMinNumInstances())
-			throw new EmbedException(this, getShortName() + " requires for embedding at least " + getMinNumInstances()
-					+ " compounds (num compounds is '" + instances.size() + "')");
+			throw new EmbedException(this,
+					getShortName() + " requires for embedding at least " + getMinNumInstances()
+							+ " compounds (num compounds is '" + instances.size() + "')");
 
 		File tmp = File.createTempFile(dataset.getShortName(), "emb");
 		File tmpDist = File.createTempFile(dataset.getShortName(), "embDist");
@@ -56,12 +59,11 @@ public abstract class AbstractRTo3DEmbedder extends Abstract3DEmbedder
 		try
 		{
 			String featureTableFile = dataset.getFeatureTableFilePath("table");
-			if (!Settings.CACHING_ENABLED || !new File(featureTableFile).exists())
-				ExportRUtil.toRTable(features,
-						CompoundPropertyUtil.valuesReplaceNullWithMedian(features, instances, dataset),
-						featureTableFile);
-			else
+			if (Settings.CACHING_ENABLED && new File(featureTableFile).exists())
 				Settings.LOGGER.info("load cached features from " + featureTableFile);
+			else
+				ExportRUtil.toRTable(features, CompoundPropertyUtil.valuesReplaceNullWithMedian(
+						features, instances, dataset), featureTableFile);
 
 			Settings.LOGGER.info("Using r-embedder " + getName() + " with properties: "
 					+ PropertyUtil.toString(getProperties()));
@@ -69,11 +71,12 @@ public abstract class AbstractRTo3DEmbedder extends Abstract3DEmbedder
 			rScript = File.createTempFile("rscript", "R");
 			FileUtil.writeStringToFile(rScript.getAbsolutePath(), getRScriptCode());
 
-			String errorOut = ExternalToolUtil.run(
-					getShortName(),
-					new String[] { BinHandler.RSCRIPT_BINARY.getLocation(), FileUtil.getAbsolutePathEscaped(rScript),
+			String errorOut = ExternalToolUtil.run(getShortName(),
+					new String[] { BinHandler.RSCRIPT_BINARY.getLocation(),
+							FileUtil.getAbsolutePathEscaped(rScript),
 							FileUtil.getAbsolutePathEscaped(new File(featureTableFile)),
-							FileUtil.getAbsolutePathEscaped(tmp), FileUtil.getAbsolutePathEscaped(tmpDist),
+							FileUtil.getAbsolutePathEscaped(tmp),
+							FileUtil.getAbsolutePathEscaped(tmpDist),
 							FileUtil.getAbsolutePathEscaped(tmpInfo) });
 			if (!TaskProvider.isRunning())
 				return null;
@@ -82,7 +85,8 @@ public abstract class AbstractRTo3DEmbedder extends Abstract3DEmbedder
 
 			try
 			{
-				processMessages.add(Message.infoMessage(FileUtil.readStringFromFile(tmpInfo.getAbsolutePath())));
+				processMessages.add(Message
+						.infoMessage(FileUtil.readStringFromFile(tmpInfo.getAbsolutePath())));
 			}
 			catch (Exception e)
 			{

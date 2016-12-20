@@ -42,7 +42,8 @@ public abstract class AbstractAppDomainComputer implements AppDomainComputer
 	public abstract void computeAppDomain();
 
 	public void computeAppDomain(//DatasetFile dataset, 
-			List<CompoundData> compounds, List<NumericProperty> features, double[][] featureDistanceMatrix)
+			List<CompoundData> compounds, List<NumericProperty> features,
+			double[][] featureDistanceMatrix)
 	{
 		//		this.dataset = dataset;
 		this.compounds = compounds;
@@ -57,8 +58,8 @@ public abstract class AbstractAppDomainComputer implements AppDomainComputer
 	{
 		//		return AppDomainPropertySet.create(getShortName(), dataset, inside,
 		//				dataset.getAppDomainValuesFilePath(this, getShortName() + "inside"));
-		return new DefaultNominalProperty(getShortName() + "-inside", ".", ArrayUtil.toStringArray(ArrayUtil
-				.toBooleanArray(inside)));
+		return new DefaultNominalProperty(getShortName() + "-inside", ".",
+				ArrayUtil.toStringArray(ArrayUtil.toBooleanArray(inside)));
 	}
 
 	@Override
@@ -89,7 +90,8 @@ public abstract class AbstractAppDomainComputer implements AppDomainComputer
 	}
 
 	@Override
-	public Messages getMessages(DatasetFile dataset, FeatureInfo featureInfo, DatasetClusterer clusterer)
+	public Messages getMessages(DatasetFile dataset, FeatureInfo featureInfo,
+			DatasetClusterer clusterer)
 	{
 		return null;
 	}

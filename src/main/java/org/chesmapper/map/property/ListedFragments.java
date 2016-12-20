@@ -9,15 +9,15 @@ import javax.swing.JOptionPane;
 
 import org.chesmapper.map.data.CDKSmartsHandler;
 import org.chesmapper.map.data.fragments.MatchEngine;
-import org.chesmapper.map.dataInterface.FragmentPropertySet;
 import org.chesmapper.map.dataInterface.FragmentProperty.SubstructureType;
+import org.chesmapper.map.dataInterface.FragmentPropertySet;
 import org.chesmapper.map.main.Settings;
 import org.mg.javalib.io.JarUtil;
 import org.mg.javalib.util.ArrayUtil;
 import org.mg.javalib.util.FileUtil;
+import org.mg.javalib.util.FileUtil.CSVFile;
 import org.mg.javalib.util.ListUtil;
 import org.mg.javalib.util.StringUtil;
-import org.mg.javalib.util.FileUtil.CSVFile;
 
 public class ListedFragments
 {
@@ -188,6 +188,7 @@ public class ListedFragments
 	{
 		for (FragmentPropertySet a : instance.fragmentListAll)
 		{
+			System.out.println("name " + a.toString());
 			if (a.toString().equals(string))
 				return a;
 		}

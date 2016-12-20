@@ -41,7 +41,8 @@ public class MaxFragAligner extends Abstract3DAligner
 	}
 
 	@Override
-	public void algin(DatasetFile dataset, List<ClusterData> clusters, List<CompoundProperty> features)
+	public void algin(DatasetFile dataset, List<ClusterData> clusters,
+			List<CompoundProperty> features)
 	{
 		for (ClusterData clusterData : clusters)
 		{
@@ -71,10 +72,10 @@ public class MaxFragAligner extends Abstract3DAligner
 			}
 			if (maxFrag != null)
 			{
-				((ClusterDataImpl) clusterData).setSubstructureSmarts(SubstructureSmartsType.MAX_FRAG,
-						maxFrag.getSmarts());
-				((ClusterDataImpl) clusterData).setSubstructureSmartsMatchEngine(SubstructureSmartsType.MAX_FRAG,
-						maxMatchEngine);
+				((ClusterDataImpl) clusterData).setSubstructureSmarts(
+						SubstructureSmartsType.MAX_FRAG, maxFrag.getSmarts());
+				((ClusterDataImpl) clusterData).setSubstructureSmartsMatchEngine(
+						SubstructureSmartsType.MAX_FRAG, maxMatchEngine);
 			}
 		}
 		alignToSmarts(dataset, clusters);
@@ -95,11 +96,13 @@ public class MaxFragAligner extends Abstract3DAligner
 	@Override
 	public void giveNoSmartsWarning(int clusterIndex)
 	{
-		TaskProvider.warning("Could not align cluster " + (clusterIndex + 1) + ", no common fragment found.", getName()
-				+ " could not align the cluster, as there is no structural fragment (of size >=" + MIN_NUM_ATOMS
-				+ ") that matches all compounds of the cluster. "
-				+ "The reason maybe that the cluster is too structurally diverse. "
-				+ "You could try to increase the number of structural fragments.");
+		TaskProvider.warning(
+				"Could not align cluster " + (clusterIndex + 1) + ", no common fragment found.",
+				getName()
+						+ " could not align the cluster, as there is no structural fragment (of size >="
+						+ MIN_NUM_ATOMS + ") that matches all compounds of the cluster. "
+						+ "The reason maybe that the cluster is too structurally diverse. "
+						+ "You could try to increase the number of structural fragments.");
 	}
 
 }

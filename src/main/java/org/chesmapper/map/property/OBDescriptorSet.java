@@ -19,8 +19,8 @@ import org.chesmapper.map.main.TaskProvider;
 import org.chesmapper.map.util.ValueFileCache;
 import org.mg.javalib.gui.binloc.Binary;
 import org.mg.javalib.util.ArrayUtil;
-import org.mg.javalib.util.ListUtil;
 import org.mg.javalib.util.FileUtil.UnexpectedNumColsException;
+import org.mg.javalib.util.ListUtil;
 
 public class OBDescriptorSet implements CompoundPropertySet
 {
@@ -49,9 +49,9 @@ public class OBDescriptorSet implements CompoundPropertySet
 				if (p != null)
 					desc.add(p);
 				else
-					desc.add(new OBDescriptorSet(descriptorID, OBDescriptorFactory
-							.getDescriptorDescription(descriptorID), OBDescriptorFactory
-							.getDescriptorDefaultType(descriptorID)));
+					desc.add(new OBDescriptorSet(descriptorID,
+							OBDescriptorFactory.getDescriptorDescription(descriptorID),
+							OBDescriptorFactory.getDescriptorDefaultType(descriptorID)));
 				sets.put(descriptorID, p);
 			}
 			descriptors = ListUtil.toArray(desc);
@@ -59,7 +59,8 @@ public class OBDescriptorSet implements CompoundPropertySet
 		return descriptors;
 	}
 
-	synchronized static CompoundProperty[] getDescriptorProps(DatasetFile dataset, boolean forceReload)
+	synchronized static CompoundProperty[] getDescriptorProps(DatasetFile dataset,
+			boolean forceReload)
 	{
 		OBDescriptorSet[] sets = getDescriptors(forceReload);
 		CompoundProperty[] props = new CompoundProperty[sets.length];
@@ -205,12 +206,12 @@ public class OBDescriptorSet implements CompoundPropertySet
 		}
 		else if (getType() == Type.NUMERIC)
 		{
-			DefaultNumericProperty prop = (DefaultNumericProperty) createOBDescriptorProperty(dataset);
+			DefaultNumericProperty prop = (DefaultNumericProperty) createOBDescriptorProperty(
+					dataset);
 			Double dVals[] = ArrayUtil.parse(vals);
 			if (dVals == null)
 			{
-				TaskProvider.warning(
-						"Cannot compute feature: " + prop.getName(),
+				TaskProvider.warning("Cannot compute feature: " + prop.getName(),
 						"Numeric features cannot be parsed. Values returned from OpenBabel:\n"
 								+ ArrayUtil.toString(vals));
 				new File(cache).delete();

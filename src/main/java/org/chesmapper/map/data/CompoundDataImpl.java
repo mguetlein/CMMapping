@@ -109,8 +109,8 @@ public class CompoundDataImpl implements CompoundData
 		{
 			try
 			{
-				icons.put(key,
-						CDKCompoundIcon.createIcon(iMolecule, black, width, height, Layout.vertical, translucent));
+				icons.put(key, CDKCompoundIcon.createIcon(iMolecule, black, width, height,
+						Layout.vertical, translucent));
 			}
 			catch (CDKException e)
 			{

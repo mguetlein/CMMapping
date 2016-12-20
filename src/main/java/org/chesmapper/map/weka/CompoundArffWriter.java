@@ -1,7 +1,9 @@
 package org.chesmapper.map.weka;
 
 import java.io.File;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.chesmapper.map.data.DatasetFile;
 import org.chesmapper.map.dataInterface.CompoundData;
@@ -10,17 +12,19 @@ import org.chesmapper.map.dataInterface.NominalProperty;
 import org.chesmapper.map.dataInterface.NumericProperty;
 import org.chesmapper.map.main.Settings;
 import org.chesmapper.map.main.TaskProvider;
-import org.mg.javalib.weka.ArffWritable;
-import org.mg.javalib.weka.ArffWriter;
+import org.mg.wekalib.data.ArffWritable;
+import org.mg.wekalib.data.ArffWriter;
 
 public class CompoundArffWriter implements ArffWritable
 {
-	public static File writeArffFile(DatasetFile dataset, List<CompoundData> compounds, List<CompoundProperty> features)
+	public static File writeArffFile(DatasetFile dataset, List<CompoundData> compounds,
+			List<CompoundProperty> features)
 	{
 		return writeArffFile(dataset.getFeatureTableFilePath("arff"), compounds, features);
 	}
 
-	public static File writeArffFile(String arffFile, List<CompoundData> compounds, List<CompoundProperty> features)
+	public static File writeArffFile(String arffFile, List<CompoundData> compounds,
+			List<CompoundProperty> features)
 	{
 		File file = new File(arffFile);
 		if (!Settings.CACHING_ENABLED || !file.exists())
@@ -85,24 +89,12 @@ public class CompoundArffWriter implements ArffWritable
 	}
 
 	@Override
-	public String getAttributeValueSpace(int attribute)
+	public String[] getAttributeDomain(int attribute)
 	{
 		if (features.get(attribute) instanceof NumericProperty)
-			return "numeric";
+			return null;
 		else
-		{
-			String s = "{";
-			for (String o : ((NominalProperty) features.get(attribute)).getDomain())
-			{
-				if (o != null && o.length() > 1)
-					s += "\"" + o + "\",";
-				else
-					s += o + ",";
-			}
-			s = s.substring(0, s.length() - 1);
-			s += "}";
-			return s;
-		}
+			return ((NominalProperty) features.get(attribute)).getDomain();
 	}
 
 	@Override
@@ -111,13 +103,45 @@ public class CompoundArffWriter implements ArffWritable
 		return compounds.size();
 	}
 
+	Map<Integer, Map<String, Integer>> nominalFeatureMap = new HashMap<>();
+
+	@Override
+	public double getAttributeValueAsDouble(int instance, int attribute) throws Exception
+	{
+		if (features.get(attribute) instanceof NumericProperty)
+		{
+			Double v = compounds.get(instance)
+					.getNormalizedValueCompleteDataset((NumericProperty) features.get(attribute));
+			if (v == null)
+				return Double.NaN;
+			else
+				return v;
+		}
+		else
+		{
+			String s = compounds.get(instance)
+					.getStringValue((NominalProperty) features.get(attribute));
+			if (s == null)
+				return Double.NaN;
+			if (!nominalFeatureMap.containsKey(attribute))
+			{
+				Map<String, Integer> map = new HashMap<>();
+				int i = 0;
+				for (String v : getAttributeDomain(attribute))
+					map.put(v, i++);
+				nominalFeatureMap.put(attribute, map);
+			}
+			return nominalFeatureMap.get(attribute).get(s);
+		}
+	}
+
 	@Override
 	public String getAttributeValue(int instance, int attribute)
 	{
 		if (features.get(attribute) instanceof NumericProperty)
 		{
-			Double v = compounds.get(instance).getNormalizedValueCompleteDataset(
-					(NumericProperty) features.get(attribute));
+			Double v = compounds.get(instance)
+					.getNormalizedValueCompleteDataset((NumericProperty) features.get(attribute));
 			if (v == null)
 				return "?";
 			else
@@ -125,7 +149,8 @@ public class CompoundArffWriter implements ArffWritable
 		}
 		else
 		{
-			String s = compounds.get(instance).getStringValue((NominalProperty) features.get(attribute));
+			String s = compounds.get(instance)
+					.getStringValue((NominalProperty) features.get(attribute));
 			if (s == null)
 				return "?";
 			else if (s.length() > 1)
@@ -147,9 +172,4 @@ public class CompoundArffWriter implements ArffWritable
 		return "?";
 	}
 
-	@Override
-	public boolean isInstanceWithoutAttributeValues(int instance)
-	{
-		return false;
-	}
 }

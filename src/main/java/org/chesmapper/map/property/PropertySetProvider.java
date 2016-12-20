@@ -23,7 +23,8 @@ public class PropertySetProvider implements FeatureMappingWorkflowProvider
 {
 	public static enum PropertySetShortcut
 	{
-		integrated, cdk, ob, obFP2, obFP3, obFP4, obMACCS, fminer, benigniBossa, cdkFunct
+		integrated, cdk, ob, obFP2, obFP3, obFP4, obMACCS, fminer, benigniBossa, cdkFunct,
+		cdkBioAct, maccs, moss
 	}
 
 	public static PropertySetProvider INSTANCE = new PropertySetProvider();
@@ -36,15 +37,15 @@ public class PropertySetProvider implements FeatureMappingWorkflowProvider
 
 	private PropertySetCategory cdk = new CDKFeaturesCategory();
 
-	private PropertySetCategory pcFeatures = new PropertySetCategory("pc", new PropertySetCategory[] { cdk,
-			new OBFeatureCategory() });
+	private PropertySetCategory pcFeatures = new PropertySetCategory("pc",
+			new PropertySetCategory[] { cdk, new OBFeatureCategory() });
 
 	private PropertySetCategory fragments = new StructuralFragmentsCategory();
 
 	private PropertySetCategory hashedFPs = new HashedFPsCategory();
 
-	private PropertySetCategory root = new PropertySetCategory("root", new PropertySetCategory[] { integrated,
-			pcFeatures, fragments, hashedFPs });
+	private PropertySetCategory root = new PropertySetCategory("root",
+			new PropertySetCategory[] { integrated, pcFeatures, fragments, hashedFPs });
 
 	public PropertySetCategory getRoot()
 	{
@@ -71,7 +72,8 @@ public class PropertySetProvider implements FeatureMappingWorkflowProvider
 		return cdk;
 	}
 
-	public void addToSelector(Selector<PropertySetCategory, CompoundPropertySet> selector, DatasetFile dataset)
+	public void addToSelector(Selector<PropertySetCategory, CompoundPropertySet> selector,
+			DatasetFile dataset)
 	{
 		for (PropertySetCategory cat : getRoot().getSubCategory())
 			recursiveAddToSelector(selector, dataset, cat, new PropertySetCategory[0]);
@@ -91,19 +93,21 @@ public class PropertySetProvider implements FeatureMappingWorkflowProvider
 		else
 		{
 			CompoundPropertySet set[] = cat.getPropertySet(dataset);
-			set = ArrayUtil.filter(CompoundPropertySet.class, set, new ListUtil.Filter<CompoundPropertySet>()
-			{
-				@Override
-				public boolean accept(CompoundPropertySet p)
-				{
-					return !p.isHiddenFromGUI();
-				}
-			});
+			set = ArrayUtil.filter(CompoundPropertySet.class, set,
+					new ListUtil.Filter<CompoundPropertySet>()
+					{
+						@Override
+						public boolean accept(CompoundPropertySet p)
+						{
+							return !p.isHiddenFromGUI();
+						}
+					});
 			selector.addElementList(ArrayUtil.push(PropertySetCategory.class, parents, cat), set);
 		}
 	}
 
-	public void putToProperties(CompoundPropertySet[] selected, Properties props, DatasetFile dataset)
+	public void putToProperties(CompoundPropertySet[] selected, Properties props,
+			DatasetFile dataset)
 	{
 		root.putToProperties(selected, props, dataset);
 		for (Property p : FragmentProperties.getProperties())
@@ -122,8 +126,8 @@ public class PropertySetProvider implements FeatureMappingWorkflowProvider
 	}
 
 	@Override
-	public CompoundPropertySet[] getFeaturesFromMappingWorkflow(Properties props, boolean storeToSettings,
-			DatasetFile dataset)
+	public CompoundPropertySet[] getFeaturesFromMappingWorkflow(Properties props,
+			boolean storeToSettings, DatasetFile dataset)
 	{
 		for (Property p : FragmentProperties.getProperties())
 			p.loadOrResetToDefault(props);
@@ -136,11 +140,13 @@ public class PropertySetProvider implements FeatureMappingWorkflowProvider
 	}
 
 	@Override
-	public void exportFeaturesToMappingWorkflow(CompoundPropertySet[] features, Properties props, DatasetFile dataset)
+	public void exportFeaturesToMappingWorkflow(CompoundPropertySet[] features, Properties props,
+			DatasetFile dataset)
 	{
 		for (CompoundPropertySet feature : features)
 			if (feature.getType() == null)
-				throw new IllegalArgumentException("cannot export un-typed features for workflow: " + feature);
+				throw new IllegalArgumentException(
+						"cannot export un-typed features for workflow: " + feature);
 		putToProperties(features, props, dataset);
 	}
 
@@ -166,7 +172,9 @@ public class PropertySetProvider implements FeatureMappingWorkflowProvider
 
 		public CompoundPropertySet[] getPropertySet(DatasetFile dataset)
 		{
-			return ListedFragments.getSets(SubstructureType.MINE);
+			return ArrayUtil.concat(CompoundPropertySet.class,
+					ListedFragments.getSets(SubstructureType.MINE),
+					OBMolPrintFingerprintSet.FINGERPRINTS);
 		}
 
 		@Override
@@ -176,7 +184,8 @@ public class PropertySetProvider implements FeatureMappingWorkflowProvider
 			switch (shortcut)
 			{
 				case obFP2:
-					return new CompoundPropertySet[] { OBFingerprintSet.getOBFingerprintSet(OBFingerprintType.FP2) };
+					return new CompoundPropertySet[] {
+							OBFingerprintSet.getOBFingerprintSet(OBFingerprintType.FP2) };
 				case fminer:
 					return new CompoundPropertySet[] { FminerPropertySet.INSTANCE };
 				default:
@@ -215,16 +224,26 @@ public class PropertySetProvider implements FeatureMappingWorkflowProvider
 			switch (shortcut)
 			{
 				case benigniBossa:
-					return new CompoundPropertySet[] { ListedFragments
-							.findFromString(ListedFragments.SMARTS_LIST_PREFIX + "ToxTree_BB_CarcMutRules") };
+					return new CompoundPropertySet[] { ListedFragments.findFromString(
+							ListedFragments.SMARTS_LIST_PREFIX + "ToxTree_BB_CarcMutRules") };
+				case maccs:
+					return new CompoundPropertySet[] { ListedFragments.findFromString(
+							ListedFragments.SMARTS_LIST_PREFIX + "MACCS (OpenBabel MACCS)") };
 				case obFP3:
-					return new CompoundPropertySet[] { OBFingerprintSet.getOBFingerprintSet(OBFingerprintType.FP3) };
+					return new CompoundPropertySet[] {
+							OBFingerprintSet.getOBFingerprintSet(OBFingerprintType.FP3) };
 				case obFP4:
-					return new CompoundPropertySet[] { OBFingerprintSet.getOBFingerprintSet(OBFingerprintType.FP4) };
+					return new CompoundPropertySet[] {
+							OBFingerprintSet.getOBFingerprintSet(OBFingerprintType.FP4) };
 				case obMACCS:
-					return new CompoundPropertySet[] { OBFingerprintSet.getOBFingerprintSet(OBFingerprintType.MACCS) };
+					return new CompoundPropertySet[] {
+							OBFingerprintSet.getOBFingerprintSet(OBFingerprintType.MACCS) };
 				case cdkFunct:
 					return new CompoundPropertySet[] { CDKFingerprintSet.FUNCTIONAL_GROUPS };
+				case cdkBioAct:
+					return new CompoundPropertySet[] { CDKFingerprintSet.BIO_ACT };
+				case moss:
+					return new CompoundPropertySet[] { MossFragmentSet.INSTANCE };
 				default:
 					return null;
 			}
@@ -340,15 +359,16 @@ public class PropertySetProvider implements FeatureMappingWorkflowProvider
 							PropertySetProvider.PropertySetShortcut shortcut)
 					{
 						if (shortcut == PropertySetProvider.PropertySetShortcut.cdk)
-							return ArrayUtil.filter(CompoundPropertySet.class, getPropertySet(dataset),
+							return ArrayUtil.filter(CompoundPropertySet.class,
+									getPropertySet(dataset),
 									new ListUtil.Filter<CompoundPropertySet>()
-									{
-										@Override
-										public boolean accept(CompoundPropertySet s)
-										{
-											return !s.toString().contains("Ionization Potential");
-										}
-									});
+							{
+								@Override
+								public boolean accept(CompoundPropertySet s)
+								{
+									return !s.toString().contains("Ionization Potential");
+								}
+							});
 						else
 							return null;
 					}

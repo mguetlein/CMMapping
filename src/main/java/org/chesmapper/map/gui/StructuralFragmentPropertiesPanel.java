@@ -33,9 +33,10 @@ public class StructuralFragmentPropertiesPanel extends JPanel
 
 	public StructuralFragmentPropertiesPanel(final CheSMapperWizard wizard)
 	{
-		propPanel = new PropertyPanel(FragmentProperties.getProperties(), PropHandler.getProperties(),
-				PropHandler.getPropertiesFile());
-		babelPanel = BinHandler.getBinaryComponent(BinHandler.BABEL_BINARY, (Window) getTopLevelAncestor());
+		propPanel = new PropertyPanel(FragmentProperties.getProperties(),
+				PropHandler.getProperties(), PropHandler.getPropertiesFile());
+		babelPanel = BinHandler.getBinaryComponent(BinHandler.BABEL_BINARY,
+				(Window) getTopLevelAncestor());
 
 		DefaultFormBuilder b = new DefaultFormBuilder(new FormLayout("p,fill:p:grow"));
 		b.append(propPanel);
@@ -47,18 +48,20 @@ public class StructuralFragmentPropertiesPanel extends JPanel
 		if (!BinHandler.BABEL_BINARY.isFound())
 			FragmentProperties.setMatchEngine(MatchEngine.CDK);
 
-		FragmentProperties.addMatchEngingePropertyChangeListenerToProperties(new PropertyChangeListener()
-		{
-			@Override
-			public void propertyChange(PropertyChangeEvent evt)
-			{
-				if (wizard.isClosed())
-					return;
-				babelPanel.setVisible(FragmentProperties.getMatchEngine() == MatchEngine.OpenBabel);
-				StructuralFragmentPropertiesPanel.this.revalidate();
-				StructuralFragmentPropertiesPanel.this.repaint();
-			}
-		});
+		FragmentProperties
+				.addMatchEngingePropertyChangeListenerToProperties(new PropertyChangeListener()
+				{
+					@Override
+					public void propertyChange(PropertyChangeEvent evt)
+					{
+						if (wizard.isClosed())
+							return;
+						babelPanel.setVisible(
+								FragmentProperties.getMatchEngine() == MatchEngine.OpenBabel);
+						StructuralFragmentPropertiesPanel.this.revalidate();
+						StructuralFragmentPropertiesPanel.this.repaint();
+					}
+				});
 	}
 
 	public void store()
@@ -74,13 +77,14 @@ public class StructuralFragmentPropertiesPanel extends JPanel
 	public void showDialog(Window owner)
 	{
 		babelPanel.setVisible(true);
-		SwingUtil.showInDialog(StructuralFragmentPropertiesPanel.this, "Settings for structural fragments", null,
-				new Runnable()
+		SwingUtil.showInDialog(StructuralFragmentPropertiesPanel.this,
+				"Settings for structural fragments", null, new Runnable()
 				{
 					@Override
 					public void run()
 					{
-						babelPanel.setVisible(FragmentProperties.getMatchEngine() == MatchEngine.OpenBabel);
+						babelPanel.setVisible(
+								FragmentProperties.getMatchEngine() == MatchEngine.OpenBabel);
 					}
 				}, Settings.TOP_LEVEL_FRAME);
 		if (owner != null)
@@ -133,8 +137,9 @@ public class StructuralFragmentPropertiesPanel extends JPanel
 			String skip = "";
 			if (FragmentProperties.isSkipOmniFragments())
 				skip = "skip omnipresent fragments, ";
-			l.setText("Settings for fragments: min-frequency " + FragmentProperties.getMinFrequency() + ", " + skip
-					+ "match with " + FragmentProperties.getMatchEngine());
+			l.setText(
+					"Settings for fragments: min-frequency " + FragmentProperties.getMinFrequency()
+							+ ", " + skip + "match with " + FragmentProperties.getMatchEngine());
 		}
 	}
 

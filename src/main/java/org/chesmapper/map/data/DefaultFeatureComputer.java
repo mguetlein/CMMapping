@@ -43,8 +43,8 @@ public class DefaultFeatureComputer implements FeatureComputer
 		int count = 0;
 		for (CompoundPropertySet propSet : compoundPropertySets)
 		{
-			TaskProvider.update("Compute feature " + (count + 1) + "/" + compoundPropertySets.length + " : "
-					+ propSet.toString());
+			TaskProvider.update("Compute feature " + (count + 1) + "/" + compoundPropertySets.length
+					+ " : " + propSet.toString());
 
 			if (propSet instanceof IntegratedPropertySet)
 				((IntegratedPropertySet) propSet).setSelectedForMapping(true);
@@ -102,8 +102,8 @@ public class DefaultFeatureComputer implements FeatureComputer
 				s = ((NominalProperty) p).getStringValues();
 
 			if ((d != null && d.length != numCompounds) || (s != null && s.length != numCompounds))
-				throw new Error("illegal num features " + p + ", is:" + (d != null ? d.length : s.length)
-						+ ", should be:" + numCompounds);
+				throw new Error("illegal num features " + p + ", is:"
+						+ (d != null ? d.length : s.length) + ", should be:" + numCompounds);
 
 			if (!TaskProvider.isRunning())
 				return;

@@ -70,7 +70,9 @@ public abstract class AbstractReal3DBuilder extends Abstract3DBuilder
 			String finalFile = dataset.get3DBuilderSDFilePath(this);
 
 			File threeD = new File(finalFile);
-			if (!threeD.exists() || !Settings.CACHING_ENABLED)
+			if (threeD.exists() && Settings.CACHING_ENABLED)
+				Settings.LOGGER.info("3d already computed: " + finalFile);
+			else
 			{
 				Settings.LOGGER.info("computing 3d: " + finalFile);
 				running = true;
@@ -93,8 +95,8 @@ public abstract class AbstractReal3DBuilder extends Abstract3DBuilder
 							if (tmpFile.exists())
 							{
 								int i = SDFUtil.countCompounds(tmpFile.getAbsolutePath());
-								TaskProvider.update("Compute 3D structure for compound " + (i + 1) + "/" + max
-										+ " (the results are cached)");
+								TaskProvider.update("Compute 3D structure for compound " + (i + 1)
+										+ "/" + max + " (the results are cached)");
 							}
 						}
 					}
@@ -104,11 +106,12 @@ public abstract class AbstractReal3DBuilder extends Abstract3DBuilder
 				running = false;
 
 				if (autoCorrect == AutoCorrect.sdf2D)
-					check3DSDFile(tmpFile.getAbsolutePath(), dataset.getSDF(), tmpFile.getAbsolutePath(),
-							build3dsuccessfull);
+					check3DSDFile(tmpFile.getAbsolutePath(), dataset.getSDF(),
+							tmpFile.getAbsolutePath(), build3dsuccessfull);
 				else if (autoCorrect == AutoCorrect.external)
 				{
-					if (dataset.getLocalPath() != null && dataset.getLocalPath().toLowerCase().endsWith(".smi"))
+					if (dataset.getLocalPath() != null
+							&& dataset.getLocalPath().toLowerCase().endsWith(".smi"))
 						check3DSDFileExternal(tmpFile.getAbsolutePath(), dataset.getLocalPath(),
 								tmpFile.getAbsolutePath(), build3dsuccessfull);
 					else
@@ -122,8 +125,7 @@ public abstract class AbstractReal3DBuilder extends Abstract3DBuilder
 				if (!FileUtil.robustRenameTo(tmpFile, new File(finalFile)))
 					throw new Error("renaming or delete file error");
 			}
-			else
-				Settings.LOGGER.info("3d already computed: " + finalFile);
+
 			threeDFilename = finalFile;
 		}
 		finally
@@ -149,17 +151,20 @@ public abstract class AbstractReal3DBuilder extends Abstract3DBuilder
 					}
 				if (numAtoms == -1)
 					throw new Exception("could not parse num atoms");
-				reader = new MDLV2000Reader(new InputStreamReader(new ByteArrayInputStream(compoundString.getBytes())));
+				reader = new MDLV2000Reader(
+						new InputStreamReader(new ByteArrayInputStream(compoundString.getBytes())));
 				IChemFile content = (IChemFile) reader.read((IChemObject) new ChemFile());
 				List<IAtomContainer> list = ChemFileManipulator.getAllAtomContainers(content);
 				if (list.size() != 1)
 					throw new Exception("Cannot parse compound");
 				if (list.get(0).getAtomCount() != numAtoms)
-					throw new Exception("Num atoms " + list.get(0).getAtomCount() + " != " + numAtoms);
+					throw new Exception(
+							"Num atoms " + list.get(0).getAtomCount() + " != " + numAtoms);
 				for (int i = 0; i < list.get(0).getBondCount(); i++)
 				{
 					if (list.get(0).getBond(i).getAtomCount() != 2)
-						throw new Exception("Num atoms for bond is " + list.get(0).getBond(i).getAtomCount());
+						throw new Exception(
+								"Num atoms for bond is " + list.get(0).getBond(i).getAtomCount());
 					IAtom a = list.get(0).getBond(i).getAtom(0);
 					IAtom b = list.get(0).getBond(i).getAtom(1);
 					Point3d pa = a.getPoint3d();
@@ -213,17 +218,21 @@ public abstract class AbstractReal3DBuilder extends Abstract3DBuilder
 		}
 	}
 
-	public static void check3DSDFile(String sdf3Dcorrupt, String sdf2Dcorrect, String sdfResult, boolean[] valid)
+	public static void check3DSDFile(String sdf3Dcorrupt, String sdf2Dcorrect, String sdfResult,
+			boolean[] valid)
 	{
 		SDFUtil.checkSDFile(sdf3Dcorrupt, sdf2Dcorrect, sdfResult, new CombinedSDFChecker(valid));
 	}
 
-	public static void check3DSDFileExternal(String sdf3Dcorrupt, String smiFile, String sdfResult, boolean[] valid)
+	public static void check3DSDFileExternal(String sdf3Dcorrupt, String smiFile, String sdfResult,
+			boolean[] valid)
 	{
-		SDFUtil.checkSDFileExternal(sdf3Dcorrupt, smiFile, sdfResult, new CombinedSDFChecker(valid));
+		SDFUtil.checkSDFileExternal(sdf3Dcorrupt, smiFile, sdfResult,
+				new CombinedSDFChecker(valid));
 	}
 
-	public static void check3DSDFileExternal(String sdf3Dcorrupt, String smiles[], String sdfResult, boolean[] valid)
+	public static void check3DSDFileExternal(String sdf3Dcorrupt, String smiles[], String sdfResult,
+			boolean[] valid)
 	{
 		SDFUtil.checkSDFileExternal(sdf3Dcorrupt, smiles, sdfResult, new CombinedSDFChecker(valid));
 	}

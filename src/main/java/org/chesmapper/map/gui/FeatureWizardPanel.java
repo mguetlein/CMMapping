@@ -34,10 +34,10 @@ import org.chesmapper.map.data.FeatureLoader;
 import org.chesmapper.map.data.fragments.FragmentProperties;
 import org.chesmapper.map.dataInterface.CompoundProperty;
 import org.chesmapper.map.dataInterface.CompoundPropertySet;
+import org.chesmapper.map.dataInterface.CompoundPropertySet.Type;
 import org.chesmapper.map.dataInterface.CompoundPropertySetUtil;
 import org.chesmapper.map.dataInterface.FragmentPropertySet;
 import org.chesmapper.map.dataInterface.NominalProperty;
-import org.chesmapper.map.dataInterface.CompoundPropertySet.Type;
 import org.chesmapper.map.main.BinHandler;
 import org.chesmapper.map.main.PropHandler;
 import org.chesmapper.map.main.ScreenSetup;
@@ -114,7 +114,8 @@ public class FeatureWizardPanel extends WizardPanel
 		JPanel p = new JPanel(new FlowLayout(FlowLayout.LEFT));
 		p.add(numFeaturesLabel);
 		loadFeaturesButton.setForegroundFont(loadFeaturesButton.getFont().deriveFont(Font.PLAIN));
-		loadFeaturesButton.setSelectedForegroundFont(loadFeaturesButton.getFont().deriveFont(Font.PLAIN));
+		loadFeaturesButton
+				.setSelectedForegroundFont(loadFeaturesButton.getFont().deriveFont(Font.PLAIN));
 		loadFeaturesButton.setSelectedForegroundColor(Color.BLUE);
 		p.add(loadFeaturesButton);
 		numFeaturesPanel.add(p);
@@ -129,7 +130,8 @@ public class FeatureWizardPanel extends WizardPanel
 
 		fragmentProperties = new StructuralFragmentPropertiesPanel(wizard);
 
-		fragmentProperties.setBorder(new CompoundBorder(new EmptyBorder(0, 0, 10, 0), fragmentProperties.getBorder()));
+		fragmentProperties.setBorder(
+				new CompoundBorder(new EmptyBorder(0, 0, 10, 0), fragmentProperties.getBorder()));
 		DefaultFormBuilder builder = new DefaultFormBuilder(new FormLayout("p,fill:p:grow"));
 		addSmarts = new JButton("Add SMARTS file");
 
@@ -165,7 +167,8 @@ public class FeatureWizardPanel extends WizardPanel
 	private void createSelector()
 	{
 		selector = new Selector<PropertySetCategory, CompoundPropertySet>(CompoundPropertySet.class,
-				PropertySetProvider.INSTANCE.getRoot(), (ScreenSetup.INSTANCE.isWizardSpaceSmall() ? 6 : 12))
+				PropertySetProvider.INSTANCE.getRoot(),
+				(ScreenSetup.INSTANCE.isWizardSpaceSmall() ? 6 : 12))
 		{
 			public Icon getIcon(CompoundPropertySet elem)
 			{
@@ -183,7 +186,8 @@ public class FeatureWizardPanel extends WizardPanel
 				else if (elem.getSize(dataset) == 1 && warningIcon == null)
 					warningIcon = ImageLoader.getImage(ImageLoader.Image.warning);
 
-				if (!elem.isComputed(dataset) && !(Settings.CACHING_ENABLED && elem.isCached(dataset))
+				if (!elem.isComputed(dataset)
+						&& !(Settings.CACHING_ENABLED && elem.isCached(dataset))
 						&& elem.isComputationSlow())
 					warningIcon = ImageLoader.getImage(ImageLoader.Image.hourglass);
 
@@ -199,7 +203,8 @@ public class FeatureWizardPanel extends WizardPanel
 			{
 				if (elem.getBinary() != null && !elem.getBinary().isFound())
 					return false;
-				if ((!elem.isSizeDynamic() || elem.isComputed(dataset)) && elem.getSize(dataset) == 0)
+				if ((!elem.isSizeDynamic() || elem.isComputed(dataset))
+						&& elem.getSize(dataset) == 0)
 					return false;
 				return CompoundPropertySetUtil.getType(elem) != null;
 			}
@@ -250,77 +255,81 @@ public class FeatureWizardPanel extends WizardPanel
 			}
 		});
 
-		selector.addPropertyChangeListener(Selector.PROPERTY_SELECTION_CHANGED, new PropertyChangeListener()
-		{
-			@Override
-			public void propertyChange(PropertyChangeEvent evt)
-			{
-				update();
-			}
-		});
-		selector.addPropertyChangeListener(Selector.PROPERTY_HIGHLIGHTING_CHANGED, new PropertyChangeListener()
-		{
-			@Override
-			public void propertyChange(PropertyChangeEvent evt)
-			{
-				if (selector.getHighlightedElement() != null)
+		selector.addPropertyChangeListener(Selector.PROPERTY_SELECTION_CHANGED,
+				new PropertyChangeListener()
 				{
-					compoundPropertyPanel.setSelectedPropertySet(selector.getHighlightedElement());
-					structuralFragmentPropsContainer.removeAll();
-					structuralFragmentPropsContainer.revalidate();
-					structuralFragmentPropsContainer.repaint();
-				}
-				else
+					@Override
+					public void propertyChange(PropertyChangeEvent evt)
+					{
+						update();
+					}
+				});
+		selector.addPropertyChangeListener(Selector.PROPERTY_HIGHLIGHTING_CHANGED,
+				new PropertyChangeListener()
 				{
-					compoundPropertyPanel.setSelectedPropertySet(null);
-					updateFeatureProperties(selector.getHighlightedCategory());
-				}
-			}
-		});
-		selector.addPropertyChangeListener(Selector.PROPERTY_TRY_ADDING_INVALID, new PropertyChangeListener()
-		{
-			@SuppressWarnings("unchecked")
-			@Override
-			public void propertyChange(PropertyChangeEvent evt)
-			{
-				DefaultFormBuilder b = new DefaultFormBuilder(new FormLayout("fill:p:grow"));
-				b.append("Could not add the following feature(s)");
-				for (Object o : (List<?>) evt.getNewValue())
-					b.append("* " + o);
-				List<CompoundPropertySet> set = (List<CompoundPropertySet>) evt.getNewValue();
-				if (set.get(0).getBinary() != null && !set.get(0).getBinary().isFound())
-					b.append(BinHandler.getBinaryComponent(set.get(0).getBinary(), wizard));
-				else
-					b.append("The feature(s) is/are most likely not suited for clustering and embedding.\nYou have to asign the feature type manually (by clicking on 'Nominal') before adding the feature/s.");
+					@Override
+					public void propertyChange(PropertyChangeEvent evt)
+					{
+						if (selector.getHighlightedElement() != null)
+						{
+							compoundPropertyPanel
+									.setSelectedPropertySet(selector.getHighlightedElement());
+							structuralFragmentPropsContainer.removeAll();
+							structuralFragmentPropsContainer.revalidate();
+							structuralFragmentPropsContainer.repaint();
+						}
+						else
+						{
+							compoundPropertyPanel.setSelectedPropertySet(null);
+							updateFeatureProperties(selector.getHighlightedCategory());
+						}
+					}
+				});
+		selector.addPropertyChangeListener(Selector.PROPERTY_TRY_ADDING_INVALID,
+				new PropertyChangeListener()
+				{
+					@SuppressWarnings("unchecked")
+					@Override
+					public void propertyChange(PropertyChangeEvent evt)
+					{
+						DefaultFormBuilder b = new DefaultFormBuilder(
+								new FormLayout("fill:p:grow"));
+						b.append("Could not add the following feature(s)");
+						for (Object o : (List<?>) evt.getNewValue())
+							b.append("* " + o);
+						List<CompoundPropertySet> set = (List<CompoundPropertySet>) evt
+								.getNewValue();
+						if (set.get(0).getBinary() != null && !set.get(0).getBinary().isFound())
+							b.append(BinHandler.getBinaryComponent(set.get(0).getBinary(), wizard));
+						else
+							b.append(
+									"The feature(s) is/are most likely not suited for clustering and embedding.\nYou have to asign the feature type manually (by clicking on 'Nominal') before adding the feature/s.");
 
-				JOptionPane.showMessageDialog(Settings.TOP_LEVEL_FRAME, b.getPanel(),
-						"Warning - Could not add feature", JOptionPane.WARNING_MESSAGE);
-			}
-		});
+						JOptionPane.showMessageDialog(Settings.TOP_LEVEL_FRAME, b.getPanel(),
+								"Warning - Could not add feature", JOptionPane.WARNING_MESSAGE);
+					}
+				});
 		selector.addPropertyChangeListener(Selector.PROPERTY_EMPTY_ADD, new PropertyChangeListener()
 		{
 			@Override
 			public void propertyChange(PropertyChangeEvent evt)
 			{
-				JOptionPane
-						.showMessageDialog(
-								Settings.TOP_LEVEL_FRAME,
-								"You have no feature/s selected. Please select (a group of) feature/s in the left panel before clicking 'Add feature'.",
-								"Warning - No feature/s selected", JOptionPane.WARNING_MESSAGE);
+				JOptionPane.showMessageDialog(Settings.TOP_LEVEL_FRAME,
+						"You have no feature/s selected. Please select (a group of) feature/s in the left panel before clicking 'Add feature'.",
+						"Warning - No feature/s selected", JOptionPane.WARNING_MESSAGE);
 			}
 		});
-		selector.addPropertyChangeListener(Selector.PROPERTY_EMPTY_REMOVE, new PropertyChangeListener()
-		{
-			@Override
-			public void propertyChange(PropertyChangeEvent evt)
-			{
-				JOptionPane
-						.showMessageDialog(
-								Settings.TOP_LEVEL_FRAME,
+		selector.addPropertyChangeListener(Selector.PROPERTY_EMPTY_REMOVE,
+				new PropertyChangeListener()
+				{
+					@Override
+					public void propertyChange(PropertyChangeEvent evt)
+					{
+						JOptionPane.showMessageDialog(Settings.TOP_LEVEL_FRAME,
 								"You have no feature/s selected. Please select (a group of) feature/s in the right panel before clicking 'Remove feature'.",
 								"Warning - No feature/s selected", JOptionPane.WARNING_MESSAGE);
-			}
-		});
+					}
+				});
 		selector.addKeyListener(new KeyAdapter()
 		{
 			public void keyTyped(KeyEvent e)
@@ -372,8 +381,9 @@ public class FeatureWizardPanel extends WizardPanel
 					String dest = Settings.getFragmentFileDestination(name);
 					if (new File(dest).exists())
 					{
-						int res2 = JOptionPane.showConfirmDialog(Settings.TOP_LEVEL_FRAME, "Smarts file '" + name
-								+ "' already exists. Replace?", "File already exists", JOptionPane.YES_OPTION);
+						int res2 = JOptionPane.showConfirmDialog(Settings.TOP_LEVEL_FRAME,
+								"Smarts file '" + name + "' already exists. Replace?",
+								"File already exists", JOptionPane.YES_OPTION);
 						if (res2 != JOptionPane.YES_OPTION)
 							return;
 					}
@@ -390,7 +400,8 @@ public class FeatureWizardPanel extends WizardPanel
 			public void propertyChange(PropertyChangeEvent evt)
 			{
 				if (evt.getPropertyName().equals(CompoundPropertyPanel.PROPERTY_TYPE_CHANGED)
-						|| evt.getPropertyName().equals(CompoundPropertyPanel.PROPERTY_CACHED_FEATURE_LOADED))
+						|| evt.getPropertyName()
+								.equals(CompoundPropertyPanel.PROPERTY_CACHED_FEATURE_LOADED))
 					update();
 			}
 		});
@@ -424,7 +435,8 @@ public class FeatureWizardPanel extends WizardPanel
 				props = fragmentPropsPanelSMARTS;
 			else if (highlightedCategory.getBinary() != null)
 			{
-				JComponent pp = BinHandler.getBinaryComponent(highlightedCategory.getBinary(), wizard);
+				JComponent pp = BinHandler.getBinaryComponent(highlightedCategory.getBinary(),
+						wizard);
 				JPanel p = new JPanel();
 				p.add(pp);
 				props = p;
@@ -474,15 +486,15 @@ public class FeatureWizardPanel extends WizardPanel
 		}
 		msg = null;
 		if (slowMiningFeatureSelected)
-			msg = Messages.slowMessage(Settings.text("features.slowMining"), new AbstractAction(
-					"Settings for fragments")
-			{
-				@Override
-				public void actionPerformed(ActionEvent e)
-				{
-					fragmentProperties.showDialog(wizard);
-				}
-			});
+			msg = Messages.slowMessage(Settings.text("features.slowMining"),
+					new AbstractAction("Settings for fragments")
+					{
+						@Override
+						public void actionPerformed(ActionEvent e)
+						{
+							fragmentProperties.showDialog(wizard);
+						}
+					});
 		else if (slowFeaturesSelected)
 			msg = MessageUtil.slowRuntimeMessages(Settings.text("features.slow"));
 		loadFeaturesButton.setVisible(notComputed);
@@ -524,7 +536,8 @@ public class FeatureWizardPanel extends WizardPanel
 						fragmentFeature = true;
 					else
 						for (int i = 0; i < set.getSize(d); i++)
-							if (set.isComputed(d) && ((NominalProperty) set.get(d, i)).getDomain().length > 2)
+							if (set.isComputed(d)
+									&& ((NominalProperty) set.get(d, i)).getDomain().length > 2)
 								nonBinaryNominalFeature = true;
 				}
 				else
@@ -589,7 +602,8 @@ public class FeatureWizardPanel extends WizardPanel
 			String msg = "The selected algorithm could run a long time because the number of compound feature pairs is ";
 			if (numFeatures * numCompounds >= 250000)
 			{
-				msg += "high (" + (numFeaturesUnknown ? ">=" : "") + (numFeatures * numCompounds / 1000) + "k).";
+				msg += "high (" + (numFeaturesUnknown ? ">=" : "")
+						+ (numFeatures * numCompounds / 1000) + "k).";
 				//				if (smartsFeaturesSelected)
 				//					msg += " You could try to increase minimum-frequency ";
 				//				else
@@ -626,8 +640,8 @@ public class FeatureWizardPanel extends WizardPanel
 
 		PropertySetProvider.INSTANCE.addToSelector(selector, dataset);
 
-		for (CompoundPropertySet m : PropertySetProvider.INSTANCE.getFeaturesFromMappingWorkflow(
-				PropHandler.getProperties(), false, dataset))
+		for (CompoundPropertySet m : PropertySetProvider.INSTANCE
+				.getFeaturesFromMappingWorkflow(PropHandler.getProperties(), false, dataset))
 			selector.setSelected(m, false);
 
 		selector.setSelected(selected, false);
@@ -639,7 +653,8 @@ public class FeatureWizardPanel extends WizardPanel
 	@Override
 	public void proceed()
 	{
-		PropertySetProvider.INSTANCE.putToProperties(selector.getSelected(), PropHandler.getProperties(), dataset);
+		PropertySetProvider.INSTANCE.putToProperties(selector.getSelected(),
+				PropHandler.getProperties(), dataset);
 
 		PropHandler.storeProperties();
 		if (fragmentProperties != null)

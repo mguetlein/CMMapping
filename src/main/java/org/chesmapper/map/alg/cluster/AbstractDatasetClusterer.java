@@ -65,14 +65,15 @@ public abstract class AbstractDatasetClusterer extends AbstractAlgorithm impleme
 	}
 
 	@Override
-	public Messages getMessages(DatasetFile dataset, FeatureInfo featureInfo, DatasetClusterer clusterer)
+	public Messages getMessages(DatasetFile dataset, FeatureInfo featureInfo,
+			DatasetClusterer clusterer)
 	{
 		Messages m = super.getMessages(dataset, featureInfo, clusterer);
 		if (requiresFeatures() && !featureInfo.isFeaturesSelected())
 			m.add(Message.errorMessage(Settings.text("error.no-features")));
 		else if (getFixedNumClustersProperty() != null)
-			m.add(Message.infoMessage(Settings.text("cluster.info.fixed-k", getFixedNumClustersProperty()
-					.getDisplayName())));
+			m.add(Message.infoMessage(Settings.text("cluster.info.fixed-k",
+					getFixedNumClustersProperty().getDisplayName())));
 		return m;
 	}
 
@@ -81,14 +82,15 @@ public abstract class AbstractDatasetClusterer extends AbstractAlgorithm impleme
 
 	protected abstract String getShortName();
 
-	public void clusterDataset(DatasetFile dataset, List<CompoundData> compounds, List<CompoundProperty> features)
-			throws Exception
+	public void clusterDataset(DatasetFile dataset, List<CompoundData> compounds,
+			List<CompoundProperty> features) throws Exception
 	{
 		String filename = dataset.getClusterAssignmentFilePath();
 		List<Integer[]> clusterAssignements;
 
 		boolean interactive = false;
-		if (this instanceof WekaClusterer && ((WekaClusterer) this).wekaClusterer instanceof CascadeSimpleKMeans)
+		if (this instanceof WekaClusterer
+				&& ((WekaClusterer) this).wekaClusterer instanceof CascadeSimpleKMeans)
 			for (Property p : getProperties())
 				if (p.getName().equals("manuallySelectNumClusters") && (Boolean) p.getValue())
 				{
@@ -263,8 +265,8 @@ public abstract class AbstractDatasetClusterer extends AbstractAlgorithm impleme
 
 		if (unclusteredCompounds != null)
 			TaskProvider.warning(Settings.text("cluster.warning.not-clustered-compounds",
-					unclusteredCompounds.getName(), unclusteredCompounds.getNumCompounds() + ""), Settings
-					.text("cluster.warning.not-clustered-compounds.desc"));
+					unclusteredCompounds.getName(), unclusteredCompounds.getNumCompounds() + ""),
+					Settings.text("cluster.warning.not-clustered-compounds.desc"));
 
 		if (count == 0)
 			throw new Error("clusterer returned no cluster");

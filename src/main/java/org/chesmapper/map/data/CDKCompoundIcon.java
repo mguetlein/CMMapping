@@ -78,7 +78,8 @@ public class CDKCompoundIcon
 
 	static IAtomContainer zeralenone;
 
-	public static MultiImageIcon createDemoIcon(boolean black, int width, int height, Layout layout, boolean translucent)
+	public static MultiImageIcon createDemoIcon(boolean black, int width, int height, Layout layout,
+			boolean translucent)
 	{
 		try
 		{
@@ -97,23 +98,24 @@ public class CDKCompoundIcon
 		}
 	}
 
-	public static MultiImageIcon createIcon(IAtomContainer iMolecule, boolean black, int width, int height,
-			Layout layout, boolean translucent) throws CDKException
+	public static MultiImageIcon createIcon(IAtomContainer iMolecule, boolean black, int width,
+			int height, Layout layout, boolean translucent) throws CDKException
 	{
 		IAtomContainerSet set = ConnectivityChecker.partitionIntoMolecules(iMolecule);
 		List<ImageIcon> icons = new ArrayList<ImageIcon>();
 		for (int i = 0; i < set.getAtomContainerCount(); i++)
-			icons.add(createIconDissconnected(set.getAtomContainer(i), black, width, height, translucent));
+			icons.add(createIconDissconnected(set.getAtomContainer(i), black, width, height,
+					translucent));
 		return new MultiImageIcon(icons, layout, Orientation.center, 2);
 	}
 
-	private static ImageIcon createIconDissconnected(IAtomContainer iMolecule, boolean black, int width, int height,
-			boolean translucent) throws CDKException
+	private static ImageIcon createIconDissconnected(IAtomContainer iMolecule, boolean black,
+			int width, int height, boolean translucent) throws CDKException
 	{
 		Color fColor = black ? Color.WHITE : Color.BLACK;
 		Color bColor = black ? Color.BLACK : Color.WHITE;
-		bColor = translucent ? new Color(bColor.getRed(), bColor.getGreen(), bColor.getBlue(), 125) : new Color(
-				bColor.getRed(), bColor.getGreen(), bColor.getBlue());
+		bColor = translucent ? new Color(bColor.getRed(), bColor.getGreen(), bColor.getBlue(), 125)
+				: new Color(bColor.getRed(), bColor.getGreen(), bColor.getBlue());
 
 		int origWidth = 1;
 		int origHeight = 1;
@@ -126,7 +128,8 @@ public class CDKCompoundIcon
 		generators.add(new BasicSceneGenerator());
 		generators.add(new BasicBondGenerator());
 		generators.add(new BasicAtomGenerator());
-		AtomContainerRenderer renderer = new AtomContainerRenderer(generators, new AWTFontManager());
+		AtomContainerRenderer renderer = new AtomContainerRenderer(generators,
+				new AWTFontManager());
 		CPKAtomColors cpkAtomColors = new CPKAtomColors();
 		for (IGenerator<IAtomContainer> generator : renderer.getGenerators())
 		{
@@ -147,8 +150,8 @@ public class CDKCompoundIcon
 					else if (parameter instanceof BasicSceneGenerator.Margin)
 						((BasicSceneGenerator.Margin) parameter).setValue(12.0);
 					else if (parameter instanceof BasicSceneGenerator.BondLength)
-						((BasicSceneGenerator.BondLength) parameter).setValue(Math.max(20,
-								Math.min(40, Math.min(width, height) / 5.0)));
+						((BasicSceneGenerator.BondLength) parameter).setValue(
+								Math.max(20, Math.min(40, Math.min(width, height) / 5.0)));
 				}
 			}
 		}
@@ -158,8 +161,8 @@ public class CDKCompoundIcon
 		Rectangle result = renderer.shift(drawArea, diagramRectangle);
 		origHeight = (int) (result.getHeight() + result.y);
 		origWidth = (int) (result.getWidth() + result.x);
-		Image image = new BufferedImage(origWidth, origHeight, translucent ? BufferedImage.TYPE_INT_ARGB
-				: BufferedImage.TYPE_INT_RGB);
+		Image image = new BufferedImage(origWidth, origHeight,
+				translucent ? BufferedImage.TYPE_INT_ARGB : BufferedImage.TYPE_INT_RGB);
 
 		Graphics2D g2 = (Graphics2D) image.getGraphics();
 		g2.setColor(bColor);
@@ -178,7 +181,8 @@ public class CDKCompoundIcon
 		Graphics2D g = resizedImage.createGraphics();
 		if (!translucent)
 			g.setComposite(AlphaComposite.Src);
-		g.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+		g.setRenderingHint(RenderingHints.KEY_INTERPOLATION,
+				RenderingHints.VALUE_INTERPOLATION_BILINEAR);
 		g.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
 		g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 		g.drawImage(image, 0, 0, scaledWidth, scaledHeight, null);
@@ -210,7 +214,8 @@ public class CDKCompoundIcon
 		MultiImageIcon img = createIcon(iMolecule, false, 400, 400, Layout.horizontal, false);
 		pW.add(new JLabel(img));
 
-		BufferedImage bi = new BufferedImage(img.getIconWidth(), img.getIconHeight(), BufferedImage.TYPE_INT_RGB);
+		BufferedImage bi = new BufferedImage(img.getIconWidth(), img.getIconHeight(),
+				BufferedImage.TYPE_INT_RGB);
 		Graphics2D g2 = bi.createGraphics();
 		g2.setColor(Color.white);
 		g2.fillRect(0, 0, img.getIconWidth(), img.getIconHeight());

@@ -13,8 +13,8 @@ import org.chesmapper.map.data.DatasetFile;
 import org.chesmapper.map.data.OpenBabelSmartsHandler;
 import org.chesmapper.map.data.fragments.FragmentProperties;
 import org.chesmapper.map.data.fragments.MatchEngine;
-import org.chesmapper.map.dataInterface.FragmentPropertySet;
 import org.chesmapper.map.dataInterface.FragmentProperty.SubstructureType;
+import org.chesmapper.map.dataInterface.FragmentPropertySet;
 import org.chesmapper.map.main.BinHandler;
 import org.chesmapper.map.main.Settings;
 import org.chesmapper.map.main.TaskProvider;
@@ -33,7 +33,8 @@ public class ListedFragmentSet extends FragmentPropertySet
 	DoubleKeyHashMap<MatchEngine, DatasetFile, String> cacheFile = new DoubleKeyHashMap<MatchEngine, DatasetFile, String>();
 	DoubleKeyHashMap<MatchEngine, DatasetFile, List<ListedFragmentProperty>> computedFragments = new DoubleKeyHashMap<MatchEngine, DatasetFile, List<ListedFragmentProperty>>();
 
-	ListedFragmentSet(String name, String description, HashMap<MatchEngine, List<ListedFragmentProperty>> fragments)
+	ListedFragmentSet(String name, String description,
+			HashMap<MatchEngine, List<ListedFragmentProperty>> fragments)
 	{
 		super(name, SubstructureType.MATCH);
 		this.fragments = fragments;
@@ -110,7 +111,8 @@ public class ListedFragmentSet extends FragmentPropertySet
 
 	private void addFragment(ListedFragmentProperty a, DatasetFile d, MatchEngine m)
 	{
-		boolean skip = FragmentProperties.isSkipOmniFragments() && a.getFrequency() == d.numCompounds();
+		boolean skip = FragmentProperties.isSkipOmniFragments()
+				&& a.getFrequency() == d.numCompounds();
 		boolean frequent = a.getFrequency() >= FragmentProperties.getMinFrequency();
 		if (!skip && frequent)
 			computedFragments.get(m, d).add(a);
@@ -146,7 +148,8 @@ public class ListedFragmentSet extends FragmentPropertySet
 		}
 	}
 
-	private List<boolean[]> readFromFile(String file, int expectedNumRows) throws UnexpectedNumColsException
+	private List<boolean[]> readFromFile(String file, int expectedNumRows)
+			throws UnexpectedNumColsException
 	{
 		CSVFile f = FileUtil.readCSV(file, expectedNumRows);
 		List<boolean[]> l = new ArrayList<boolean[]>();
@@ -159,9 +162,7 @@ public class ListedFragmentSet extends FragmentPropertySet
 	{
 		if (cacheFile.get(FragmentProperties.getMatchEngine(), dataset) == null)
 		{
-			cacheFile.put(
-					FragmentProperties.getMatchEngine(),
-					dataset,
+			cacheFile.put(FragmentProperties.getMatchEngine(), dataset,
 					dataset.getSmartsMatchesFilePath(FragmentProperties.getMatchEngine(),
 							fragments.get(FragmentProperties.getMatchEngine())));
 		}
@@ -177,9 +178,9 @@ public class ListedFragmentSet extends FragmentPropertySet
 	@Override
 	public boolean compute(DatasetFile dataset)
 	{
-		Settings.LOGGER.info("Computing structural fragment " + FragmentProperties.getMatchEngine() + " "
-				+ FragmentProperties.getMinFrequency() + " " + FragmentProperties.isSkipOmniFragments() + " "
-				+ dataset.getSDF());
+		Settings.LOGGER.info("Computing structural fragment " + FragmentProperties.getMatchEngine()
+				+ " " + FragmentProperties.getMinFrequency() + " "
+				+ FragmentProperties.isSkipOmniFragments() + " " + dataset.getSDF());
 
 		List<String> smarts = new ArrayList<String>();
 		for (ListedFragmentProperty fragment : fragments.get(FragmentProperties.getMatchEngine()))
@@ -218,7 +219,8 @@ public class ListedFragmentSet extends FragmentPropertySet
 		}
 
 		//		if (!computedFragments.containsKeyPair(StructuralFragmentProperties.getMatchEngine(), dataset))
-		computedFragments.put(FragmentProperties.getMatchEngine(), dataset, new ArrayList<ListedFragmentProperty>());
+		computedFragments.put(FragmentProperties.getMatchEngine(), dataset,
+				new ArrayList<ListedFragmentProperty>());
 
 		int count = 0;
 		for (boolean[] match : matches)
@@ -235,7 +237,8 @@ public class ListedFragmentSet extends FragmentPropertySet
 				else
 					m[i] = "0";
 			}
-			ListedFragmentProperty fragment = fragments.get(FragmentProperties.getMatchEngine()).get(count);
+			ListedFragmentProperty fragment = fragments.get(FragmentProperties.getMatchEngine())
+					.get(count);
 			fragment.setFrequency(f);
 			fragment.setStringValues(m);
 			addFragment(fragment, dataset, FragmentProperties.getMatchEngine());

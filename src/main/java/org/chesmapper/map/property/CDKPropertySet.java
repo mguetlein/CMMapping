@@ -29,7 +29,8 @@ import org.openscience.cdk.qsar.descriptors.molecular.LengthOverBreadthDescripto
 
 public class CDKPropertySet extends AbstractPropertySet
 {
-	private static final CDKPropertySet[] DESCRIPTORS = new CDKPropertySet[CDKDescriptor.getDescriptors().length];
+	private static final CDKPropertySet[] DESCRIPTORS = new CDKPropertySet[CDKDescriptor
+			.getDescriptors().length];
 	private static final CDKPropertySet[] NUMERIC_DESCRIPTORS = new CDKPropertySet[CDKDescriptor
 			.getNumericDescriptors().length];
 	private static LinkedHashMap<String, CDKPropertySet[]> NUMERIC_CLASSES = new LinkedHashMap<String, CDKPropertySet[]>();
@@ -53,7 +54,8 @@ public class CDKPropertySet extends AbstractPropertySet
 			{
 				if (!NUMERIC_CLASSES.containsKey(s))
 					NUMERIC_CLASSES.put(s, new CDKPropertySet[0]);
-				NUMERIC_CLASSES.put(s, ArrayUtil.push(CDKPropertySet.class, NUMERIC_CLASSES.get(s), set));
+				NUMERIC_CLASSES.put(s,
+						ArrayUtil.push(CDKPropertySet.class, NUMERIC_CLASSES.get(s), set));
 			}
 	}
 
@@ -242,7 +244,8 @@ public class CDKPropertySet extends AbstractPropertySet
 
 			for (int i = 0; i < mols.length; i++)
 			{
-				TaskProvider.verbose("Compute " + this + " for " + (i + 1) + "/" + mols.length + " compounds");
+				TaskProvider.verbose(
+						"Compute " + this + " for " + (i + 1) + "/" + mols.length + " compounds");
 
 				if (mols[i].getAtomCount() == 0)
 				{
@@ -265,8 +268,8 @@ public class CDKPropertySet extends AbstractPropertySet
 						else
 							d = desc.computeDescriptor(mol);
 						if (getSize() != d.length)
-							throw new IllegalStateException("num feature values wrong for '" + this + "' : "
-									+ getSize() + " != " + d.length);
+							throw new IllegalStateException("num feature values wrong for '" + this
+									+ "' : " + getSize() + " != " + d.length);
 						for (int j = 0; j < d.length; j++)
 							vv.get(j)[i] = d[j];
 						success = true;
@@ -297,7 +300,8 @@ public class CDKPropertySet extends AbstractPropertySet
 			}
 		}
 		for (int j = 0; j < getSize(); j++)
-			((DefaultNumericProperty) createCDKProperty(desc, dataset, j)).setDoubleValues(vv.get(j));
+			((DefaultNumericProperty) createCDKProperty(desc, dataset, j))
+					.setDoubleValues(vv.get(j));
 		return success;
 	}
 
@@ -328,12 +332,14 @@ public class CDKPropertySet extends AbstractPropertySet
 					{
 						if (min != null && values[i] < min)
 						{
-							System.out.println("filtering " + f + " " + values[i] + " should not be < " + min);
+							System.out.println(
+									"filtering " + f + " " + values[i] + " should not be < " + min);
 							values[i] = null;
 						}
 						else if (max != null && values[i] > max)
 						{
-							System.out.println("filtering " + f + " " + values[i] + " should not be > " + max);
+							System.out.println(
+									"filtering " + f + " " + values[i] + " should not be > " + max);
 							values[i] = null;
 						}
 					}

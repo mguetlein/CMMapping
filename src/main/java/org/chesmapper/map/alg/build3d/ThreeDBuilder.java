@@ -5,8 +5,8 @@ import org.chesmapper.map.data.DatasetFile;
 
 public interface ThreeDBuilder extends Algorithm
 {
-	public static final ThreeDBuilder BUILDERS[] = { UseOrigStructures.INSTANCE, CDK3DBuilder.INSTANCE,
-			OpenBabel3DBuilder.INSTANCE };//, SDFImport3DBuilder.INSTANCE };
+	public static final ThreeDBuilder BUILDERS[] = { UseOrigStructures.INSTANCE,
+			CDK3DBuilder.INSTANCE, OpenBabel3DBuilder.INSTANCE, External3DBuilder.INSTANCE };//, SDFImport3DBuilder.INSTANCE };
 
 	public boolean isCached(DatasetFile datasetFile);
 

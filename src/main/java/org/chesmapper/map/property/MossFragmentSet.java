@@ -12,8 +12,8 @@ import org.chesmapper.map.data.DatasetFile;
 import org.chesmapper.map.data.fragments.FragmentProperties;
 import org.chesmapper.map.data.fragments.MatchEngine;
 import org.chesmapper.map.dataInterface.DefaultFragmentProperty;
-import org.chesmapper.map.dataInterface.FragmentPropertySet;
 import org.chesmapper.map.dataInterface.FragmentProperty.SubstructureType;
+import org.chesmapper.map.dataInterface.FragmentPropertySet;
 import org.chesmapper.map.main.Settings;
 import org.chesmapper.map.main.TaskProvider;
 import org.mg.javalib.util.FileUtil;
@@ -61,7 +61,8 @@ public class MossFragmentSet extends FragmentPropertySet
 	public boolean isCached(DatasetFile dataset)
 	{
 		String path = getMossResultsFilePath(dataset);
-		return Settings.CACHING_ENABLED && new File(path + "_1").exists() && new File(path + "_2").exists();
+		return Settings.CACHING_ENABLED && new File(path + "_1").exists()
+				&& new File(path + "_2").exists();
 	}
 
 	@Override
@@ -100,7 +101,8 @@ public class MossFragmentSet extends FragmentPropertySet
 				String infile = File.createTempFile("moss", "smiles").getAbsolutePath();
 				FileUtil.writeStringToFile(infile, smiString.toString());
 
-				String cmd[] = new String[] { "-t0", "-ismi", "-s" + minFreq, infile, outfile1, outfile2 };
+				String cmd[] = new String[] { "-t0", "-ismi", "-s" + minFreq, infile, outfile1,
+						outfile2 };
 				//				Miner.main(cmd);
 
 				Miner miner = new Miner();
@@ -167,8 +169,8 @@ public class MossFragmentSet extends FragmentPropertySet
 				if (!r1[0].equals(r2[0]))
 					throw new IllegalStateException();
 				String smiles = r1[1];
-				DefaultFragmentProperty p = new DefaultFragmentProperty(this, smiles, "Structural Fragment", smiles,
-						MatchEngine.OpenBabel);
+				DefaultFragmentProperty p = new DefaultFragmentProperty(this, smiles,
+						"Structural Fragment", smiles, MatchEngine.OpenBabel);
 				p.setFrequency(Integer.parseInt(r1[4]));
 				String[] featureValue = new String[dataset.numCompounds()];
 				Arrays.fill(featureValue, "0");

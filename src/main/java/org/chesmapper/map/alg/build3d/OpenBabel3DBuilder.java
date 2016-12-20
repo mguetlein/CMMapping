@@ -28,19 +28,22 @@ public class OpenBabel3DBuilder extends AbstractReal3DBuilder
 				return !TaskProvider.isRunning();
 			}
 		};
-		if (datasetFile.getLocalPath() != null && datasetFile.getLocalPath().toLowerCase().endsWith(".smi"))
-			return BinHandler.getOBWrapper().compute3DfromSmiles(Settings.BABEL_3D_CACHE, datasetFile.getLocalPath(),
-					outfile, aborter);
-		else if (datasetFile.getLocalPath() != null && datasetFile.getLocalPath().toLowerCase().endsWith(".csv"))
-			return BinHandler.getOBWrapper().compute3DfromSmiles(Settings.BABEL_3D_CACHE, datasetFile.getSmiles(),
-					outfile, aborter);
+		if (datasetFile.getLocalPath() != null
+				&& datasetFile.getLocalPath().toLowerCase().endsWith(".smi"))
+			return BinHandler.getOBWrapper().compute3DfromSmiles(Settings.BABEL_3D_CACHE,
+					!Settings.CACHING_ENABLED, datasetFile.getLocalPath(), outfile, aborter);
+		else if (datasetFile.getLocalPath() != null
+				&& datasetFile.getLocalPath().toLowerCase().endsWith(".csv"))
+			return BinHandler.getOBWrapper().compute3DfromSmiles(Settings.BABEL_3D_CACHE,
+					!Settings.CACHING_ENABLED, datasetFile.getSmiles(), outfile, aborter);
 		else
 		{
 			boolean isMixture[] = new boolean[datasetFile.getCompounds().length];
 			for (int i = 0; i < isMixture.length; i++)
-				isMixture[i] = DescriptorForMixturesHandler.isMixture(datasetFile.getCompounds()[i]);
-			return BinHandler.getOBWrapper().compute3DfromSDF(Settings.BABEL_3D_CACHE, datasetFile.getSDF(), isMixture,
-					outfile, aborter);
+				isMixture[i] = DescriptorForMixturesHandler
+						.isMixture(datasetFile.getCompounds()[i]);
+			return BinHandler.getOBWrapper().compute3DfromSDF(Settings.BABEL_3D_CACHE,
+					!Settings.CACHING_ENABLED, datasetFile.getSDF(), isMixture, outfile, aborter);
 		}
 	}
 

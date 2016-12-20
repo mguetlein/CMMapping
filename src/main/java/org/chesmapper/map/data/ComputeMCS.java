@@ -72,8 +72,10 @@ public class ComputeMCS
 			if (smarts != null)
 			{
 				((ClusterDataImpl) c).setSubstructureSmarts(SubstructureSmartsType.MCS, smarts);
-				((ClusterDataImpl) c).setSubstructureSmartsMatchEngine(SubstructureSmartsType.MCS, MatchEngine.CDK);
-				Settings.LOGGER.info("MCSMolecule: " + c.getSubstructureSmarts(SubstructureSmartsType.MCS));
+				((ClusterDataImpl) c).setSubstructureSmartsMatchEngine(SubstructureSmartsType.MCS,
+						MatchEngine.CDK);
+				Settings.LOGGER.info(
+						"MCSMolecule: " + c.getSubstructureSmarts(SubstructureSmartsType.MCS));
 			}
 			count++;
 		}

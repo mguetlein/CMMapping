@@ -20,7 +20,7 @@ import org.chesmapper.map.weka.CompoundArffWriter;
 import org.mg.javalib.gui.Messages;
 import org.mg.javalib.gui.property.Property;
 import org.mg.javalib.gui.property.PropertyUtil;
-import org.mg.javalib.weka.WekaPropertyUtil;
+import org.mg.javalib.gui.property.WekaPropertyUtil;
 
 import weka.clusterers.ClusterEvaluation;
 import weka.clusterers.Clusterer;
@@ -46,11 +46,12 @@ public class WekaClusterer extends AbstractDatasetClusterer
 		}
 	}
 
-	private static String SKIP_PROPERTIES[] = new String[] { "saveInstanceData", "displayStdDevs", "debug",
-			"displayModelInOldFormat", "printNewick" };
-	private static final Clusterer[] CLUSTERER = new Clusterer[] { kMeans, new CascadeSimpleKMeans(),
-			new FarthestFirst(), new EM(), new Cobweb(), new HierarchicalClusterer()
-	//, new XMeans() 
+	private static String SKIP_PROPERTIES[] = new String[] { "saveInstanceData", "displayStdDevs",
+			"debug", "displayModelInOldFormat", "printNewick" };
+	private static final Clusterer[] CLUSTERER = new Clusterer[] { kMeans,
+			new CascadeSimpleKMeans(), new FarthestFirst(), new EM(), new Cobweb(),
+			new HierarchicalClusterer(),
+			//, new XMeans() 
 	};
 
 	public static WekaClusterer[] WEKA_CLUSTERER;
@@ -111,12 +112,14 @@ public class WekaClusterer extends AbstractDatasetClusterer
 		}
 		else if (wekaClusterer instanceof SimpleKMeans)
 		{
-			additionalDescription = Settings.text("cluster.weka.kmeans.desc", Settings.text("cluster.weka.cascade"));
+			additionalDescription = Settings.text("cluster.weka.kmeans.desc",
+					Settings.text("cluster.weka.cascade"));
 			clusterApproach = ClusterApproach.Centroid;
 		}
 		else if (wekaClusterer instanceof FarthestFirst)
 		{
-			additionalDescription = Settings.text("cluster.weka.farthest.desc", Settings.text("cluster.weka.cascade"));
+			additionalDescription = Settings.text("cluster.weka.farthest.desc",
+					Settings.text("cluster.weka.cascade"));
 			clusterApproach = ClusterApproach.Centroid;
 		}
 		else if (wekaClusterer instanceof CascadeSimpleKMeans)
@@ -154,7 +157,8 @@ public class WekaClusterer extends AbstractDatasetClusterer
 	}
 
 	@Override
-	protected List<Integer[]> cluster(DatasetFile dataset, List<CompoundData> compounds, List<CompoundProperty> features)
+	protected List<Integer[]> cluster(DatasetFile dataset, List<CompoundData> compounds,
+			List<CompoundProperty> features)
 	{
 		WekaPropertyUtil.setProperties(wekaClusterer, properties);
 
@@ -199,7 +203,8 @@ public class WekaClusterer extends AbstractDatasetClusterer
 	}
 
 	@Override
-	public Messages getMessages(DatasetFile dataset, FeatureInfo featureInfo, DatasetClusterer clusterer)
+	public Messages getMessages(DatasetFile dataset, FeatureInfo featureInfo,
+			DatasetClusterer clusterer)
 	{
 		Messages m = super.getMessages(dataset, featureInfo, clusterer);
 		if (wekaClusterer instanceof EM || wekaClusterer instanceof CascadeSimpleKMeans)
@@ -239,7 +244,8 @@ public class WekaClusterer extends AbstractDatasetClusterer
 				if (method.getName().equals("globalInfo"))
 				{
 					s += "<i>Internal WEKA description:</i>\n";
-					s += method.invoke(wekaClusterer, (Object[]) null).toString().replaceAll("\n\n", "\n");
+					s += method.invoke(wekaClusterer, (Object[]) null).toString().replaceAll("\n\n",
+							"\n");
 					break;
 				}
 			}

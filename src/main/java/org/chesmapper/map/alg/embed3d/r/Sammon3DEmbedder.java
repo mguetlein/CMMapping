@@ -16,10 +16,36 @@ import org.mg.javalib.util.StringLineAdder;
 
 public class Sammon3DEmbedder extends AbstractRTo3DEmbedder
 {
-	public static final Sammon3DEmbedder INSTANCE = new Sammon3DEmbedder();
+	public static final Sammon3DEmbedder INSTANCE = new Sammon3DEmbedder(null);
+	public static final Sammon3DEmbedder INSTANCE_Jaccard = new Sammon3DEmbedder("Jaccard");
+	public static final Sammon3DEmbedder INSTANCE_Tanimoto = new Sammon3DEmbedder("Tanimoto");
 
-	private Sammon3DEmbedder()
+	String fixedSimilarity;
+
+	int niter_default = 100;
+	double magic_default = 0.2;
+	double tol_default = 0.0001;
+	int randomSeed_default = 1;
+
+	IntegerProperty niter;
+	DoubleProperty magic;
+	DoubleProperty tol;
+	DistanceProperty dist_sim;
+	IntegerProperty randomSeed;
+
+	private Sammon3DEmbedder(String fixedSimilarity)
 	{
+		if (fixedSimilarity != null)
+			this.fixedSimilarity = fixedSimilarity;
+		else
+		{
+			niter = new IntegerProperty("Maximum number of iterations (niter)", niter_default);
+			magic = new DoubleProperty("Initial value of the step size constant in diagonal Newton method (magic)",
+					magic_default);
+			tol = new DoubleProperty("Tolerance for stopping, in units of stress (tol)", tol_default, 0.0, 1.0, 0.00001);
+			dist_sim = new DistanceProperty(getName());
+			randomSeed = new IntegerProperty("Random seed", "Sammon random seed", randomSeed_default);
+		}
 	}
 
 	public int getMinNumInstances()
@@ -30,13 +56,19 @@ public class Sammon3DEmbedder extends AbstractRTo3DEmbedder
 	@Override
 	protected String getShortName()
 	{
-		return "sammon";
+		String suffix = "";
+		if (fixedSimilarity != null)
+			suffix = "_" + fixedSimilarity;
+		return "sammon" + suffix;
 	}
 
 	@Override
 	public String getName()
 	{
-		return getNameStatic();
+		String suffix = "";
+		if (fixedSimilarity != null)
+			suffix = " " + fixedSimilarity;
+		return getNameStatic() + suffix;
 	}
 
 	public static String getNameStatic()
@@ -50,14 +82,6 @@ public class Sammon3DEmbedder extends AbstractRTo3DEmbedder
 		return Settings.text("embed.r.sammon.desc", Settings.R_STRING) + "\n\n" + Settings.text("distance.desc");
 	}
 
-	IntegerProperty niter = new IntegerProperty("Maximum number of iterations (niter)", 100);
-	DoubleProperty magic = new DoubleProperty(
-			"Initial value of the step size constant in diagonal Newton method (magic)", 0.2);
-	DoubleProperty tol = new DoubleProperty("Tolerance for stopping, in units of stress (tol)", 0.0001, 0.0, 1.0,
-			0.00001);
-	DistanceProperty dist_sim = new DistanceProperty(getName());
-	IntegerProperty randomSeed = new IntegerProperty("Random seed", "Sammon random seed", 1);
-
 	@Override
 	public Property getRandomSeedProperty()
 	{
@@ -67,7 +91,10 @@ public class Sammon3DEmbedder extends AbstractRTo3DEmbedder
 	@Override
 	public Property[] getProperties()
 	{
-		return new Property[] { niter, magic, tol, dist_sim, randomSeed };
+		if (fixedSimilarity != null)
+			return new Property[0];
+		else
+			return new Property[] { niter, magic, tol, dist_sim, randomSeed };
 	}
 
 	public void enableTanimoto()
@@ -80,26 +107,53 @@ public class Sammon3DEmbedder extends AbstractRTo3DEmbedder
 	{
 		//		String dist_sim = this.dist_sim.getValue().toString();
 		//		String dist_sim_method = null;
-		String dist_sim_str = null;
-		if (dist_sim.isDistanceSelected())
-			dist_sim_str = "dist_method=\"" + dist_sim.getSelectedDistance() + "\"";
+		Integer randomSeed_;
+		Integer niter_;
+		Double magic_;
+		Double tol_;
+		String dist_sim_str;
+		if (dist_sim == null)
+		{
+			dist_sim_str = "sim_method=\"" + fixedSimilarity + "\"";
+			randomSeed_ = randomSeed_default;
+			niter_ = niter_default;
+			magic_ = magic_default;
+			tol_ = tol_default;
+		}
 		else
-			dist_sim_str = "sim_method=\"" + dist_sim.getSelectedSimilarity() + "\"";
+		{
+			if (dist_sim.isDistanceSelected())
+				dist_sim_str = "dist_method=\"" + dist_sim.getSelectedDistance() + "\"";
+			else
+				dist_sim_str = "sim_method=\"" + dist_sim.getSelectedSimilarity() + "\"";
+			randomSeed_ = randomSeed.getValue();
+			niter_ = niter.getValue();
+			magic_ = magic.getValue();
+			tol_ = tol.getValue();
+		}
 
 		StringLineAdder s = new StringLineAdder();
 		s.add("args <- commandArgs(TRUE)");
 		s.add(RScriptUtil.installAndLoadPackage("MASS"));
-		s.add(dist_sim.loadPackage());
+		if (dist_sim != null)
+			s.add(dist_sim.loadPackage());
+		else
+			s.add(RScriptUtil.installAndLoadPackage("proxy"));
 		s.add(rCode);
 		s.add("df = read.table(args[1])");
-		s.add("set.seed(" + randomSeed.getValue() + ")");
+		s.add("set.seed(" + randomSeed_ + ")");
 		//s.add("save.image(\"/tmp/image.R\")");
-		s.add("res <- sammon_duplicates(df, k=3, niter=" + niter.getValue() + ", magic=" + magic.getValue() + ", tol="
-				+ tol.getValue() + ", " + dist_sim_str + " )");
+		s.add("res <- sammon_duplicates(df, k=3, niter=" + niter_ + ", magic=" + magic_ + ", tol=" + tol_ + ", "
+				+ dist_sim_str + " )");
 
 		s.add("print(head(res))");
 		s.add("write.table(res,args[2])");
-		s.add("write.table(as.matrix(" + dist_sim.computeDistance("df") + "),args[3])");
+		String computeDistance;
+		if (dist_sim != null)
+			computeDistance = dist_sim.computeDistance("df");
+		else
+			computeDistance = "pr_simil2dist(simil(df, method=\"" + fixedSimilarity + "\"))";
+		s.add("write.table(as.matrix(" + computeDistance + "),args[3])");
 		return s.toString();
 	}
 
@@ -191,6 +245,9 @@ public class Sammon3DEmbedder extends AbstractRTo3DEmbedder
 	@Override
 	public DistanceMeasure getDistanceMeasure()
 	{
-		return dist_sim.getDistanceMeasure();
+		if (fixedSimilarity != null)
+			return new DistanceMeasure(fixedSimilarity);
+		else
+			return dist_sim.getDistanceMeasure();
 	}
 }

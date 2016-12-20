@@ -36,11 +36,11 @@ import org.chesmapper.map.data.DatasetFile;
 import org.chesmapper.map.data.FeatureLoader;
 import org.chesmapper.map.dataInterface.CompoundProperty;
 import org.chesmapper.map.dataInterface.CompoundPropertySet;
+import org.chesmapper.map.dataInterface.CompoundPropertySet.Type;
 import org.chesmapper.map.dataInterface.FragmentProperty;
 import org.chesmapper.map.dataInterface.FragmentPropertySet;
 import org.chesmapper.map.dataInterface.NominalProperty;
 import org.chesmapper.map.dataInterface.NumericProperty;
-import org.chesmapper.map.dataInterface.CompoundPropertySet.Type;
 import org.chesmapper.map.main.BinHandler;
 import org.chesmapper.map.main.ScreenSetup;
 import org.chesmapper.map.main.Settings;
@@ -86,8 +86,10 @@ public class CompoundPropertyPanel extends JPanel
 	LinkButton rawDataLink = new LinkButton("Raw data...");
 	JPanel featurePlotPanel = new JPanel(new BorderLayout());
 	ButtonGroup radioGroup = new ButtonGroup();
-	JToggleButton nominalFeatureButton = new JToggleButton("Nominal", ImageLoader.getImage(ImageLoader.Image.distinct));
-	JToggleButton numericFeatureButton = new JToggleButton("Numeric", ImageLoader.getImage(ImageLoader.Image.numeric));
+	JToggleButton nominalFeatureButton = new JToggleButton("Nominal",
+			ImageLoader.getImage(ImageLoader.Image.distinct));
+	JToggleButton numericFeatureButton = new JToggleButton("Numeric",
+			ImageLoader.getImage(ImageLoader.Image.numeric));
 	JPanel mainPanel;
 
 	private boolean selfUpdate = false;
@@ -153,7 +155,8 @@ public class CompoundPropertyPanel extends JPanel
 		cardPanel.add(loadButtonPanel, "loadButton");
 
 		DefaultFormBuilder b3 = new DefaultFormBuilder(new FormLayout("p"));
-		b3.append(BinHandler.getBinaryComponent(BinHandler.BABEL_BINARY, (Window) getTopLevelAncestor()));
+		b3.append(BinHandler.getBinaryComponent(BinHandler.BABEL_BINARY,
+				(Window) getTopLevelAncestor()));
 		babelBinaryPanel = b3.getPanel();
 		cardPanel.add(babelBinaryPanel, "babel-binary");
 
@@ -223,8 +226,8 @@ public class CompoundPropertyPanel extends JPanel
 		});
 		comboBox.setRenderer(new DefaultListCellRenderer()
 		{
-			public Component getListCellRendererComponent(JList<?> list, Object value, int index, boolean isSelected,
-					boolean cellHasFocus)
+			public Component getListCellRendererComponent(JList<?> list, Object value, int index,
+					boolean isSelected, boolean cellHasFocus)
 			{
 				String s = value + "";
 				if (s.length() > 60)
@@ -262,23 +265,28 @@ public class CompoundPropertyPanel extends JPanel
 			@Override
 			public void actionPerformed(ActionEvent e)
 			{
-				JOptionPane.showMessageDialog(Settings.TOP_LEVEL_FRAME, new JScrollPane(rawDataTable()));
+				JOptionPane.showMessageDialog(Settings.TOP_LEVEL_FRAME,
+						new JScrollPane(rawDataTable()));
 			}
 		});
 	}
 
 	private JTable rawDataTable()
 	{
-		final CompoundProperty selectedProperty = selectedPropertySet.get(dataset, selectedPropertyIndex);
+		final CompoundProperty selectedProperty = selectedPropertySet.get(dataset,
+				selectedPropertyIndex);
 		Object o[];
 		Double n[] = null;
-		String[] c = new String[] { "Index", selectedPropertySet.get(dataset, selectedPropertyIndex).toString() };
+		String[] c = new String[] { "Index",
+				selectedPropertySet.get(dataset, selectedPropertyIndex).toString() };
 		if (selectedPropertySet.getType() == Type.NUMERIC)
 		{
 			o = ((NumericProperty) selectedProperty).getDoubleValues();
 			n = ((NumericProperty) selectedProperty).getNormalizedValues();
-			c = ArrayUtil.concat(c, new String[] { selectedPropertySet.get(dataset, selectedPropertyIndex).toString()
-					+ " normalized" });
+			c = ArrayUtil.concat(c,
+					new String[] {
+							selectedPropertySet.get(dataset, selectedPropertyIndex).toString()
+									+ " normalized" });
 		}
 		else
 			o = ((NominalProperty) selectedProperty).getStringValues();
@@ -301,15 +309,16 @@ public class CompoundPropertyPanel extends JPanel
 		JTable table = new JTable(model);
 		table.setDefaultRenderer(Object.class, new DefaultTableCellRenderer()
 		{
-			public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected,
-					boolean hasFocus, int row, int column)
+			public Component getTableCellRendererComponent(JTable table, Object value,
+					boolean isSelected, boolean hasFocus, int row, int column)
 			{
 				if (value instanceof Double)
 					if (column == 1 && ((NumericProperty) selectedProperty).isInteger())
 						value = StringUtil.formatDouble((Double) value, 0);
 					else
 						value = StringUtil.formatDouble((Double) value, 3);
-				return super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+				return super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row,
+						column);
 			}
 		});
 		TableRowSorter<TableModel> sorter = new TableRowSorter<TableModel>(table.getModel());
@@ -336,7 +345,8 @@ public class CompoundPropertyPanel extends JPanel
 		{
 			comboBox.setSelectedIndex(propIndex);
 			if (prop.get(dataset, propIndex) instanceof FragmentProperty)
-				comboBox.setToolTipText(((FragmentProperty) prop.get(dataset, propIndex)).getSmarts());
+				comboBox.setToolTipText(
+						((FragmentProperty) prop.get(dataset, propIndex)).getSmarts());
 			else
 				comboBox.setToolTipText("");
 			comboBox.setEnabled(true);
@@ -364,7 +374,8 @@ public class CompoundPropertyPanel extends JPanel
 			if (prop.get(dataset, propIndex).numMissingValues() > 0)
 			{
 				missingValuesLabel.setVisible(true);
-				missingValuesLabel.setText("Missing values: " + prop.get(dataset, propIndex).numMissingValues());
+				missingValuesLabel.setText(
+						"Missing values: " + prop.get(dataset, propIndex).numMissingValues());
 			}
 			else
 				missingValuesLabel.setVisible(false);
@@ -392,7 +403,8 @@ public class CompoundPropertyPanel extends JPanel
 				//				for (int i = 0; i < values.size(); i++)
 				//					if (selectedProperty.isSmartsProperty() || isExportedSmarts)
 				//						values.set(i, AbstractFragmentProperty.getFormattedSmartsValue(values.get(i)));
-				p = new BarPlotPanel(null, "#compounds", ArrayUtil.toPrimitiveDoubleArray(counts), values);
+				p = new BarPlotPanel(null, "#compounds", ArrayUtil.toPrimitiveDoubleArray(counts),
+						values);
 				((BarPlotPanel) p).setMaximumBarWidth(.35);
 			}
 			else if (type == Type.NUMERIC)
@@ -406,22 +418,26 @@ public class CompoundPropertyPanel extends JPanel
 				if (vals.size() == 0)
 				{
 					p = new JPanel(new BorderLayout());
-					p.add(new JLabel("Could not compute values for " + prop.get(dataset, propIndex).toString()));
+					p.add(new JLabel("Could not compute values for "
+							+ prop.get(dataset, propIndex).toString()));
 				}
 				else
 				{
-					p = new HistogramPanel(null, null, selectedProperty.toString(), "#compounds", "",
-							ArrayUtil.toPrimitiveDoubleArray(vals), 20, null, true);
+					p = new HistogramPanel(null, null, selectedProperty.toString(), "#compounds",
+							"", ArrayUtil.toPrimitiveDoubleArray(vals), 20, null, true);
 				}
 			}
 			else
 			{
 				NominalProperty selectedProperty = (NominalProperty) prop.get(dataset, propIndex);
 				CountedSet<String> set = CountedSet.fromArray(selectedProperty.getStringValues());
-				p = new MessageLabel(Message.warningMessage("This feature ('" + selectedProperty.toString()
-						+ "') is most likely not suited for clustering and embedding.\n"
-						+ "It is not numeric, and it has '" + set.getNumValues() + "' distinct values."));
-				((MessageLabel) p).setMessageFont(((MessageLabel) p).getMessageFont().deriveFont(Font.BOLD));
+				p = new MessageLabel(
+						Message.warningMessage("This feature ('" + selectedProperty.toString()
+								+ "') is most likely not suited for clustering and embedding.\n"
+								+ "It is not numeric, and it has '" + set.getNumValues()
+								+ "' distinct values."));
+				((MessageLabel) p)
+						.setMessageFont(((MessageLabel) p).getMessageFont().deriveFont(Font.BOLD));
 				p.setBorder(new EmptyBorder(0, 10, 0, 0));
 			}
 
@@ -439,10 +455,12 @@ public class CompoundPropertyPanel extends JPanel
 			numericFeatureButton.setEnabled(false);
 			rawDataLink.setEnabled(false);
 			if (prop instanceof FragmentPropertySet)
-				p = new MessageLabel(Message.warningMessage("No fragments found. Try to change fragment settings."));
+				p = new MessageLabel(Message
+						.warningMessage("No fragments found. Try to change fragment settings."));
 			else
 				p = new MessageLabel(Message.warningMessage("This feature has no values."));
-			((MessageLabel) p).setMessageFont(((MessageLabel) p).getMessageFont().deriveFont(Font.BOLD));
+			((MessageLabel) p)
+					.setMessageFont(((MessageLabel) p).getMessageFont().deriveFont(Font.BOLD));
 			p.setBorder(new EmptyBorder(0, 10, 0, 0));
 		}
 		if (p != null)
@@ -458,9 +476,8 @@ public class CompoundPropertyPanel extends JPanel
 
 	private void loadComputedOrCachedProperty()
 	{
-		if (selectedPropertySet == null
-				|| (!selectedPropertySet.isComputed(dataset) && !(Settings.CACHING_ENABLED && selectedPropertySet
-						.isCached(dataset))))
+		if (selectedPropertySet == null || (!selectedPropertySet.isComputed(dataset)
+				&& !(Settings.CACHING_ENABLED && selectedPropertySet.isCached(dataset))))
 			throw new Error("WTF");
 
 		if (loading.contains(dataset))
@@ -539,7 +556,8 @@ public class CompoundPropertyPanel extends JPanel
 			else
 			{
 				fragmentProps.setVisible(selectedPropertySet instanceof FragmentPropertySet);
-				if (prop.isComputed(dataset) || (Settings.CACHING_ENABLED && prop.isCached(dataset)))
+				if (prop.isComputed(dataset)
+						|| (Settings.CACHING_ENABLED && prop.isCached(dataset)))
 					loadComputedOrCachedProperty();
 				else
 					showCard("loadButton", loadButtonPanel);

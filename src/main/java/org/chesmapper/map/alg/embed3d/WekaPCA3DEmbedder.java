@@ -16,7 +16,7 @@ import org.chesmapper.map.main.Settings;
 import org.chesmapper.map.main.TaskProvider;
 import org.chesmapper.map.weka.CompoundArffWriter;
 import org.mg.javalib.gui.property.Property;
-import org.mg.javalib.weka.WekaPropertyUtil;
+import org.mg.javalib.gui.property.WekaPropertyUtil;
 
 import weka.attributeSelection.PrincipalComponents;
 import weka.core.Instance;
@@ -42,25 +42,26 @@ public class WekaPCA3DEmbedder extends Abstract3DEmbedder
 		if (properties != null)
 			this.properties = properties;
 		else
-			this.properties = WekaPropertyUtil.getProperties(pca, new String[0], new WekaPropertyUtil.DefaultChanger()
-			{
-				@Override
-				public String getName()
-				{
-					return "centerData";
-				}
+			this.properties = WekaPropertyUtil.getProperties(pca, new String[0],
+					new WekaPropertyUtil.DefaultChanger()
+					{
+						@Override
+						public String getName()
+						{
+							return "centerData";
+						}
 
-				@Override
-				public Object getAlternateDefaultValue()
-				{
-					return true;
-				}
-			});
+						@Override
+						public Object getAlternateDefaultValue()
+						{
+							return true;
+						}
+					});
 	}
 
 	@Override
-	public List<Vector3f> embed(DatasetFile dataset, List<CompoundData> instances, List<CompoundProperty> features)
-			throws Exception //boolean[] trainInstances
+	public List<Vector3f> embed(DatasetFile dataset, List<CompoundData> instances,
+			List<CompoundProperty> features) throws Exception //boolean[] trainInstances
 	{
 		if (this == INSTANCE_NO_PROBS)
 			pca.setCenterData(true);
@@ -103,7 +104,8 @@ public class WekaPCA3DEmbedder extends Abstract3DEmbedder
 	public DistanceMatrix getFeatureDistanceMatrix()
 	{
 		if (dist == null)
-			dist = new DistanceMatrix(DistanceMeasure.EUCLIDEAN_DISTANCE, EmbedUtil.euclMatrix(instances, features));
+			dist = new DistanceMatrix(DistanceMeasure.EUCLIDEAN_DISTANCE,
+					EmbedUtil.euclMatrix(instances, features));
 		return dist;
 	}
 
@@ -136,8 +138,8 @@ public class WekaPCA3DEmbedder extends Abstract3DEmbedder
 	{
 		return Settings.text("embed.weka.pca.desc", Settings.WEKA_STRING) + "\n\n"
 				+ "<i>WEKA API documentation:</i> http://weka.sourceforge.net/doc/"
-				+ pca.getClass().getName().replaceAll("\\.", "/") + ".html\n\n" + "<i>Internal WEKA description:</i>\n"
-				+ pca.globalInfo();
+				+ pca.getClass().getName().replaceAll("\\.", "/") + ".html\n\n"
+				+ "<i>Internal WEKA description:</i>\n" + pca.globalInfo();
 	}
 
 	@Override

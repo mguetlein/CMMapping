@@ -40,11 +40,13 @@ public class ManualAligner extends Abstract3DAligner
 	}
 
 	@Override
-	public void algin(DatasetFile dataset, List<ClusterData> clusters, List<CompoundProperty> features)
+	public void algin(DatasetFile dataset, List<ClusterData> clusters,
+			List<CompoundProperty> features)
 	{
 		for (ClusterData c : clusters)
 		{
-			((ClusterDataImpl) c).setSubstructureSmarts(SubstructureSmartsType.MANUAL, smartsProptery.getValue());
+			((ClusterDataImpl) c).setSubstructureSmarts(SubstructureSmartsType.MANUAL,
+					smartsProptery.getValue());
 			((ClusterDataImpl) c).setSubstructureSmartsMatchEngine(SubstructureSmartsType.MANUAL,
 					(MatchEngine) matchEngineProperty.getValue());
 		}
@@ -78,12 +80,11 @@ public class ManualAligner extends Abstract3DAligner
 	@Override
 	public void giveNoSmartsWarning(int clusterIndex)
 	{
-		TaskProvider
-				.warning(
-						"Could not align cluster " + (clusterIndex + 1) + " to manual SMARTS "
-								+ smartsProptery.getValue(),
-						getName()
-								+ " could not align the compounds of this cluster to the SMARTS you have provided. You try using another chemical library for aligning the compounds.");
+		TaskProvider.warning(
+				"Could not align cluster " + (clusterIndex + 1) + " to manual SMARTS "
+						+ smartsProptery.getValue(),
+				getName()
+						+ " could not align the compounds of this cluster to the SMARTS you have provided. You try using another chemical library for aligning the compounds.");
 	}
 
 	@Override
@@ -93,7 +94,8 @@ public class ManualAligner extends Abstract3DAligner
 	}
 
 	@Override
-	public Messages getMessages(DatasetFile dataset, FeatureInfo featureInfo, DatasetClusterer clusterer)
+	public Messages getMessages(DatasetFile dataset, FeatureInfo featureInfo,
+			DatasetClusterer clusterer)
 	{
 		if (Settings.BIG_DATA)
 			return Messages.warningMessage(Settings.text("align.warn.ignored-because-big-data"));
@@ -103,11 +105,14 @@ public class ManualAligner extends Abstract3DAligner
 				return Messages.errorMessage("Please provide a SMARTS string");
 			int l = SmartsUtil.getLength(smartsProptery.getValue());
 			if (l == -1)
-				return Messages.errorMessage("Not a valid SMARTS string: '" + smartsProptery.getValue() + "'");
+				return Messages.errorMessage(
+						"Not a valid SMARTS string: '" + smartsProptery.getValue() + "'");
 			if (l < 3)
 				return Messages.errorMessage("Minimum length for SMARTS is 3");
-			if (matchEngineProperty.getValue() == MatchEngine.OpenBabel && !BinHandler.BABEL_BINARY.isFound())
-				return Messages.errorMessage("OpenBabel not found, please use CDK for smarts alignment");
+			if (matchEngineProperty.getValue() == MatchEngine.OpenBabel
+					&& !BinHandler.BABEL_BINARY.isFound())
+				return Messages
+						.errorMessage("OpenBabel not found, please use CDK for smarts alignment");
 			return null;
 		}
 
