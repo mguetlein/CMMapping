@@ -16,6 +16,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.Vector;
 
+import javax.vecmath.Point2d;
 import javax.vecmath.Point3d;
 
 import org.chesmapper.map.dataInterface.CompoundProperty;
@@ -66,6 +67,7 @@ import org.openscience.cdk.tools.manipulator.ChemFileManipulator;
 public class FeatureService
 {
 	private HashMap<DatasetFile, IAtomContainer[]> fileToCompounds = new HashMap<DatasetFile, IAtomContainer[]>();
+	private HashMap<DatasetFile, Boolean> fileHas2D = new HashMap<DatasetFile, Boolean>();
 	private HashMap<DatasetFile, Boolean> fileHas3D = new HashMap<DatasetFile, Boolean>();
 	private HashMap<DatasetFile, LinkedHashSet<IntegratedPropertySet>> integratedProperties = new HashMap<DatasetFile, LinkedHashSet<IntegratedPropertySet>>();
 	private HashMap<DatasetFile, IntegratedPropertySet> integratedSmiles = new HashMap<DatasetFile, IntegratedPropertySet>();
@@ -117,6 +119,7 @@ public class FeatureService
 		{
 			fileToCompounds.remove(dataset);
 			fileHas3D.remove(dataset);
+			fileHas2D.remove(dataset);
 			integratedProperties.remove(dataset);
 			integratedSmiles.remove(dataset);
 			cdkSmiles.remove(dataset);
@@ -436,7 +439,7 @@ public class FeatureService
 					reader = new ReaderFactory().createReader(new InputStreamReader(new FileInputStream(file)));
 				if (reader == null)
 					throw new IllegalArgumentException("Could not determine input file type");
-				else if (reader instanceof MDLReader || reader instanceof MDLV2000Reader)
+				else if (reader instanceof MDLReader || reader instanceof MDLV2000Reader || reader instanceof SDFReader)
 					dataset.setSDF(dataset.getLocalPath());
 				IChemFile content = (IChemFile) reader.read((IChemObject) new ChemFile());
 				list = ChemFileManipulator.getAllAtomContainers(content);
@@ -721,6 +724,37 @@ public class FeatureService
 		return fileHas3D.get(dataset);
 	}
 
+	public synchronized boolean has2D(DatasetFile dataset)
+	{
+		if (!fileToCompounds.containsKey(dataset))
+			return false;
+		if (fileHas2D.get(dataset) == null)
+		{
+			boolean has2D = false;
+
+			IAtomContainer mols[] = fileToCompounds.get(dataset);
+			for (IAtomContainer molecule : mols)
+			{
+				for (int i = 0; i < molecule.getAtomCount(); i++)
+				{
+					// check both to make sure
+					// apparently CDK sometimes only sets one
+					Point3d p = molecule.getAtom(i).getPoint3d();
+					Point2d p2 = molecule.getAtom(i).getPoint2d();
+					if ((p != null && (p.x != 0 || p.y != 0)) || (p2 != null && (p2.x != 0 || p2.y != 0)))
+					{
+						has2D = true;
+						break;
+					}
+				}
+				if (has2D)
+					break;
+			}
+			fileHas2D.put(dataset, has2D);
+		}
+		return fileHas2D.get(dataset);
+	}
+
 	public static boolean[] generateCDK3D(DatasetFile dataset, String threeDFilename, String forcefield)
 	{
 		boolean valid[] = new boolean[dataset.getCompounds().length];
@@ -811,6 +845,9 @@ public class FeatureService
 
 				for (int cIndex : compoundOrigIndices)
 				{
+					TaskProvider.verbose("Create 2D structure for compound " + (cIndex + 1) + "/"
+							+ compoundOrigIndices.length);
+
 					IAtomContainer molecule = molecules[cIndex];
 
 					IAtomContainerSet oldSet = ConnectivityChecker.partitionIntoMolecules(molecule);
